@@ -1,0 +1,50 @@
+/* Modal background overlay */
+.modalOverlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Modal box */
+.modalContainer {
+    position: relative;
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    width: 30%;
+    max-width: 400px;
+}
+
+
+
+/* Close button */
+.closeBtn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    border: none;
+    background: red;
+    color: white;
+    padding: 6px 12px;
+    cursor: pointer;
+    border-radius: 10%;
+    font-size: 1rem;
+}
+
+/* Responsive styling */
+@media (max-width: 479px) {
+    .modalContainer {
+        width: 70%;
+    }
+}

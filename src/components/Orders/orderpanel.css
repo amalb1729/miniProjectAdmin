@@ -1,0 +1,62 @@
+.admin-panel {
+    width: 80%;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.admin-panel h2 {
+    text-align: center;
+    color: #333;
+}
+
+.admin-panel h3 {
+    margin-top: 20px;
+    color: #444;
+}
+
+.admin-panel table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    background: white;
+}
+
+.admin-panel table, th, td {
+    border: 1px solid #ddd;
+    padding: 10px;
+    text-align: left;
+}
+
+.admin-panel th {
+    background: #007bff;
+    color: white;
+}
+
+.admin-panel tr:nth-child(even) {
+    background-color: #f2f2f2;
+}
+
+.admin-panel tr:hover {
+    background-color: #ddd;
+}
+
+.admin-panel button {
+    padding: 8px 12px;
+    border: none;
+    background: #28a745;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.admin-panel button:hover {
+    background: #218838;
+}
+
+.btngrp{
+    display: flex;
+    gap: 10px;
+}

@@ -1,0 +1,27 @@
+
+body{
+    margin: 0px;
+    ;
+}
+
+.app{
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh
+}
+.content{
+    flex-grow: 1;
+}
+
+
+.test{
+    height: 1000px;
+    background-color: rgb(83, 158, 96);
+
+}
+
+
+
+button:hover{
+    cursor:pointer;
+}

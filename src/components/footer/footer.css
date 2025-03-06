@@ -1,0 +1,16 @@
+/* Footer Styling */
+footer {
+    background-color: #2e4d2a; /* Slightly refined green for better visibility */
+    width: 100%;
+    height: 20px; /* Increased height for better visual appeal */
+    padding: 15px 0; /* Padding for spacing */
+    text-align: start; 
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow for separation */
+  }
+  
+  .footer-copyright p {
+    color: #ffffff; /* White text for contrast */
+    font-size: 1rem; /* Standard font size */
+    margin: 0; /* Remove default margin */
+    font-weight: normal;
+  }

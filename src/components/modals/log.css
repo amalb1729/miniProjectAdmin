@@ -1,0 +1,126 @@
+/* Modal content styling */
+.modalContent {
+    display: flex;
+    flex-direction: column;
+    padding: 15px;
+    align-items: center;
+    width: 100%;
+}
+
+/* Headings */
+.modalContent h2 {
+    margin-bottom: 15px;
+    color: #333; /* Dark text for better contrast */
+}
+
+/* Input fields */
+.modalContent input, 
+.modalContent select {
+    width: 90%;
+    padding: 12px;
+    margin: 5px 0;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+/* Focus effect on input */
+.modalContent input:focus, 
+.modalContent select:focus {
+    border-color: #007bff; /* Highlight input on focus */
+}
+
+/* Password input container */
+.password-container {
+    display: flex;
+    align-items: center;
+    width: 90%;
+    gap: 8px;
+}
+
+/* Password checkbox */
+.password-container input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Next Button Styling */
+.next {
+    width: 90%;
+    padding: 12px;
+    font-size: 1rem;
+    background-color: #f1f1f1;; /* Green */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    margin-top: 10px;
+}
+
+/* Disabled Next Button */
+.next:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+/* Hover Effect */
+.next:hover:not(:disabled) {
+    background-color:  #ddd;
+}
+
+/* Button container */
+.options {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between; /* Evenly distribute buttons */
+    width: 100%;
+    margin-top: 10px;
+    gap: 10px; /* Space between buttons */
+}
+
+/* General button styling */
+.options button {
+    flex: 1; /* Make buttons equally sized */
+    padding: 12px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Primary buttons */
+.submit {
+    background-color: #007bff;
+    color: white;
+}
+
+.submit:hover {
+    background-color: #0056b3;
+}
+
+/* Secondary buttons */
+.options button:not(.submit) {
+    background-color: #f1f1f1; /* Light gray */
+    color: #333;
+}
+
+.options button:not(.submit):hover {
+    background-color: #ddd;
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .options {
+        flex-direction: column;
+        gap: 5px; /* Reduce space between stacked buttons */
+    }
+
+    .options button, .next {
+        width: 100%;
+    }
+}
