@@ -63,5 +63,5 @@ function OrderPanel() {
     );
 }
 
-{orderShowing[order._id]?null:(<p>hi</p>)}
+
 export default OrderPanel;
