@@ -1,26 +1,21 @@
-import { NavLink } from 'react-router-dom';
+import { Navigate, NavLink } from 'react-router-dom';
 import './header.css';
 import { useContext, useState } from 'react';
 import { myContext } from '../../App';
+import  {useNavigate} from "react-router-dom"
 
 
 function Header() {
     const {isLoggedIn,setLoggedIn,setLoginOpen}=useContext(myContext)
-    
+    const navigate=useNavigate();    
     return (
         <>
             <div className="head">
                 <header>
                     <h1 className="logo">Store</h1>
-                    {!isLoggedIn && 
-                        (<div className="account">
-                            <button type="button" className="accbtn login" onClick={() => setLoginOpen(true)} >Login</button>
-                        </div>)
-                    }
-
-                    {
-                      isLoggedIn &&(<button type="button" className="accbtn login" onClick={() => setLoggedIn(false)} >Logout</button>)
-                    }
+    
+                      <button type="button" className="accbtn login" onClick={() => {setLoggedIn(false);setLoginOpen(true);}}>Logout</button>
+                
 
 
                 </header>

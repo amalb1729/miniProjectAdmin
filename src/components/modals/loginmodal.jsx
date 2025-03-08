@@ -2,6 +2,7 @@ import { useContext, useRef, useState } from "react";
 import Modal from "./modal";
 import { myContext } from "../../App";
 import "./log.css";
+import { useNavigate } from "react-router-dom";
 
 function LoginModal() {
     const { isLoginOpen, setLoginOpen,isLoggedIn,setLoggedIn} = useContext(myContext);
@@ -9,6 +10,7 @@ function LoginModal() {
     const passRef = useRef(null);
     const [message, setMessage] = useState("");
     const [showPassword, setShowPassword] = useState(false); // Toggle password visibility
+    const navigate = useNavigate();
 
     const checkpw = async () => {
         const username = userRef.current.value.trim();
@@ -44,6 +46,7 @@ function LoginModal() {
                     setLoggedIn(true);
                     setLoginOpen(false);
                     setMessage(null);
+                    navigate("/inventory");
                 }, 2000);
             } else {
                 setMessage("❌ " + data.message);
@@ -57,7 +60,7 @@ function LoginModal() {
     
 
     return (
-        <Modal isOpen={isLoginOpen} closeModal={() => { setLoginOpen(false); setMessage(null); }}>
+        <Modal isOpen={isLoginOpen} closeModal={() => { }}>
             <div className="modalContent">
                 <h2>Login</h2>
                 <input type="text" placeholder="Username" ref={userRef} />
