@@ -28,6 +28,7 @@ function App() {
           <Route path="orders" element={isLoggedIn ? <OrderPanel /> : <Navigate to="/" />} />
           <Route path="inventory" element={isLoggedIn ? <InventoryPanel /> : <Navigate to="/" />} />
           <Route path="/" element={<LoginModal />} />
+          <Route path="/*" element={<LoginModal />} />
         </Routes>
       </div>
       <Footer />

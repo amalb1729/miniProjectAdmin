@@ -27,13 +27,7 @@ function OrderPanel() {
 
     useEffect(()=>{
         if(showing){
-            console.log(showing)
             setModelIsOpen(true)
-            showing.orderedItems.forEach((order)=>{
-            
-                     console.log(order._id,order.itemId?_id:"item id not found",order.itemId?.name:"itemname not found",order.itemId?.price:"item price not found")
-            
-            })
         }
 
     },[showing])

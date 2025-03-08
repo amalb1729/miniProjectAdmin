@@ -6,7 +6,6 @@ function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder}){
 
 
     return(
-        
         <Modal isOpen={modalIsOpen} closeModal={()=>{setModelIsOpen(false);
                                                     hideFullOrder()}}>
             <div>
@@ -25,10 +24,10 @@ function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder}){
                         if(order)
                         return(
                         <tr key={order._id}>
-                            <td>{order.itemId["_id"] || "id not found"}</td>
-                            <td>{order.itemId["name"]}</td>{/* Display user's name */}
-                            <td>{order.itemId["price"]}</td>
-                            <td>{order.quantity}</td></tr>
+                            <td>{order.itemId}</td>
+                            <td>{order.itemName}</td>{/* Display user's name */}
+                            <td>{order.itemPrice||"item price not found"}</td>
+                            <td>{order.itemQuantity}</td></tr>
                         )
                         else
                             return(
