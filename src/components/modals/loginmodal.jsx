@@ -43,6 +43,8 @@ function LoginModal() {
     
             if (response.ok && data.user.role=="admin") {
                 setMessage("✅ Login Successful!");
+                sessionStorage.setItem('isAdminLoggedIn', 'true');
+                
                 setTimeout(() => {
                     setLoggedIn(true);
                     setLoginOpen(false);

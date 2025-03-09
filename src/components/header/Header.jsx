@@ -8,13 +8,20 @@ import  {useNavigate} from "react-router-dom"
 function Header() {
     const {isLoggedIn,setLoggedIn,setLoginOpen}=useContext(myContext)
     const navigate=useNavigate();    
+
+    const handleLogout = () => {
+        sessionStorage.removeItem('isAdminLoggedIn');
+        setLoggedIn(false);
+        setLoginOpen(true);
+    };
+
     return (
         <>
             <div className="head">
                 <header>
                     <h1 className="logo">Store</h1>
     
-                      <button type="button" className="accbtn login" onClick={() => {setLoggedIn(false);setLoginOpen(true);}}>Logout</button>
+                      <button type="button" className="accbtn login" onClick={handleLogout}>Logout</button>
                 
 
 

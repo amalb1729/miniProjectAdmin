@@ -12,29 +12,34 @@ import LoginModal from './components/modals/loginmodal'
 export const myContext=createContext();
 
 function App() {
-
   const [isLoginOpen, setLoginOpen] = useState(true);
-  const [isLoggedIn,setLoggedIn]=useState(false)
+  const [isLoggedIn, setLoggedIn] = useState(() => {
+    // Check sessionStorage for login state
+    const loginState = sessionStorage.getItem('isAdminLoggedIn') === 'true';
+    // Only show login modal if not logged in
+    if (loginState) setLoginOpen(false);
+    return loginState;
+  });
+  
   const loginProp={ isLoginOpen, setLoginOpen,isLoggedIn,setLoggedIn}
 
-
-    return (
-  <div className="app">
-    <myContext.Provider value={{ isLoginOpen, setLoginOpen, isLoggedIn, setLoggedIn }}>
-      <Header />
-      <div className="content">
-        <Routes>
-          {/* Redirect to login if not logged in */}
-          <Route path="orders" element={isLoggedIn ? <OrderPanel /> : <Navigate to="/" />} />
-          <Route path="inventory" element={isLoggedIn ? <InventoryPanel /> : <Navigate to="/" />} />
-          <Route path="/" element={<LoginModal />} />
-          <Route path="/*" element={<LoginModal />} />
-        </Routes>
-      </div>
-      <Footer />
-    </myContext.Provider>
-  </div>
-);
+  return (
+    <div className="app">
+      <myContext.Provider value={{ isLoginOpen, setLoginOpen, isLoggedIn, setLoggedIn }}>
+        <Header />
+        <div className="content">
+          <Routes>
+            {/* Redirect to login if not logged in */}
+            <Route path="orders" element={isLoggedIn ? <OrderPanel /> : <Navigate to="/" />} />
+            <Route path="inventory" element={isLoggedIn ? <InventoryPanel /> : <Navigate to="/" />} />
+            <Route path="/" element={<LoginModal />} />
+            <Route path="/*" element={<LoginModal />} />
+          </Routes>
+        </div>
+        <Footer />
+      </myContext.Provider>
+    </div>
+  );
 }
 
 export default App
