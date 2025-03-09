@@ -60,7 +60,7 @@ function OrderPanel() {
         console.log(id)
     }
 
-    const changeStatusFn= async(id,status)=>{
+    const changeStatusFn= async(id,status,prevStatus)=>{
         try{
 
             const response = await fetch("http://localhost:5000/order/orders/change", {
@@ -71,6 +71,21 @@ function OrderPanel() {
     
             const data = await response.json();
             console.log(data)
+
+            if(prevStatus=="Pending"){
+                const changedorder=pendingOrders.find((element)=>(element._id==id))
+                changedorder.status=status;
+                setPendingOrders((prev)=>(prev.filter((element)=>(element._id!=id))))
+                setCompletedOrders((prev)=>([changedorder,...prev]))
+            }
+            else{
+                const changedorder=completedOrders.find((element)=>(element._id==id))
+                changedorder.status=status;
+                setCompletedOrders((prev)=>(prev.filter((element)=>(element._id!=id))))
+                setPendingOrders((prev)=>([changedorder,...prev]))
+            }
+            
+        
 
         }catch(error){
             console.log(error)
@@ -86,53 +101,83 @@ function OrderPanel() {
     return (
         <>
         <div className="admin-panel">
+            <div className="order-section">
+                <h3 className="section-title">Pending Orders</h3>
+                <div className="table-container">
+                    <table className="order-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>User</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {pendingOrders.map(order => (
+                                <tr key={order._id} className="order-row">
+                                    <td className="order-id">{order._id}</td>
+                                    <td className="user-name">{order.userId.username}</td>
+                                    <td>
+                                        <span className="status pending">{order.status}</span>
+                                    </td>
+                                    <td className="action-cell">
+                                        <button 
+                                            className="action-btn view-btn" 
+                                            onClick={()=>{showFullOrder(order._id,order.status)}}>
+                                            View Details
+                                        </button>
+                                        <button 
+                                            className="action-btn edit-btn" 
+                                            onClick={()=>{editStatus(order._id,order.status)}}>
+                                            Edit Status
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
 
-            {/* Orders Section */}
-            <h3>Pending Orders</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>User</th>
-                        <th>Status</th>
-                        <th>Show</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {pendingOrders.map(order => (
-                        <tr key={order._id}>
-                            <td>{order._id}</td>
-                            <td>{order.userId.username}</td>{/* Display user's name */}
-                            <td>{order.status}</td>
-                            <td><button onClick={()=>{showFullOrder(order._id,order.status)}}>show</button>
-                                  <button onClick={()=>{editStatus(order._id,order.status)}}>edit</button></td></tr>
-                    ))}
-                </tbody>
-            </table>
-
-            <h3>Completed Orders</h3>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Order ID</th>
-                        <th>User</th>
-                        <th>Status</th>
-                        <th>Show</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {completedOrders.map(order => (
-                        <tr key={order._id}>
-                            <td>{order._id}</td>
-                            <td>{order.userId.username}</td>{/* Display user's name */}
-                            <td>{order.status}</td>
-                            <td><button onClick={()=>{showFullOrder(order._id,order.status)}}>show</button>
-                                <button onClick={()=>{editStatus(order._id,order.status)}}>edit</button></td></tr>
-                    ))}
-                </tbody>
-            </table>
-
-
+            <div className="order-section">
+                <h3 className="section-title">Completed/Cancelled Orders</h3>
+                <div className="table-container">
+                    <table className="order-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>User</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {completedOrders.map(order => (
+                                <tr key={order._id} className="order-row">
+                                    <td className="order-id">{order._id}</td>
+                                    <td className="user-name">{order.userId.username}</td>
+                                    <td>
+                                        <span className={`status ${order.status}`}>{order.status}</span>
+                                    </td>
+                                    <td className="action-cell">
+                                        <button 
+                                            className="action-btn view-btn" 
+                                            onClick={()=>{showFullOrder(order._id,order.status)}}>
+                                            View Details
+                                        </button>
+                                        <button 
+                                            className="action-btn edit-btn" 
+                                            onClick={()=>{editStatus(order._id,order.status)}}>
+                                            Edit Status
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
         {modalIsOpen && showing ?(<OrderModal {...orderModalProps}/>):null}
         {statusModal?<EditStatusModal {...statusModalProps}/>:null}

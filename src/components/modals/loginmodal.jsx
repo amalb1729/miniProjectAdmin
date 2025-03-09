@@ -39,8 +39,9 @@ function LoginModal() {
             });
     
             const data = await response.json();
+            console.log(data)
     
-            if (response.ok) {
+            if (response.ok && data.user.role=="admin") {
                 setMessage("✅ Login Successful!");
                 setTimeout(() => {
                     setLoggedIn(true);
@@ -48,7 +49,16 @@ function LoginModal() {
                     setMessage(null);
                     navigate("/inventory");
                 }, 2000);
-            } else {
+            }
+
+            else if(response.ok){
+                setMessage("❌ " + "Admin privileges not found");
+                userRef.current.value = "";
+                passRef.current.value = "";
+
+            } 
+            
+            else {
                 setMessage("❌ " + data.message);
                 userRef.current.value = "";
                 passRef.current.value = "";

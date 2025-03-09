@@ -1,10 +1,194 @@
 .admin-panel {
-    width: 80%;
-    margin: 20px auto;
-    padding: 20px;
-    background-color: #f8f9fa;
+    width: 90%;
+    max-width: 1200px;
+    margin: 30px auto;
+    padding: 30px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.admin-panel-title {
+    text-align: center;
+    color: #2d3748;
+    font-size: 2rem;
+    margin-bottom: 30px;
+    font-weight: 600;
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.section-title {
+    color: #4a5568;
+    font-size: 1.5rem;
+    margin: 0;
+}
+
+.add-item-btn {
+    background-color: #4299e1;
+    padding: 10px 20px;
     border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    color: white;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.add-item-btn:hover {
+    background-color: #3182ce;
+    transform: translateY(-1px);
+}
+
+.status-message {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    text-align: center;
+    font-weight: bold;
+    padding: 15px 30px;
+
+    border: 1px solid #c3e6cb;
+    border-radius: 8px;
+    z-index: 9999; /* Ensures it appears above other elements */
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: fadeInOut 3s ease-in-out;
+}
+
+/* Add animation keyframes */
+@keyframes fadeInOut {
+    0% { opacity: 0; }
+    15% { opacity: 1; }
+    85% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
+
+.status-message.success {
+    background-color: #4299e1;
+    color: white;
+}
+
+.status-message.error {
+    background-color: #f56565;
+    color: white;
+}
+
+.table-container {
+    overflow-x: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.inventory-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+}
+
+.inventory-table th {
+    background: #2b6cb0;
+    color: white;
+    font-weight: 600;
+    padding: 15px;
+    text-align: left;
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.inventory-table td {
+    padding: 15px;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: middle;
+}
+
+.inventory-row:hover {
+    background-color: #f7fafc;
+}
+
+.edit-input {
+    width: 100%;
+    padding: 8px 0px;
+    border: 1px solid #cbd5e0;
+    border-radius: 6px;
+    font-size: 0.95rem;
+}
+
+.edit-input:focus {
+    outline: none;
+    border-color: #4299e1;
+    box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
+}
+
+.action-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.edit-btn, .save-btn, .remove-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.edit-btn {
+    background-color: #4299e1;
+    color: white;
+}
+
+.save-btn {
+    background-color: #48bb78;
+    color: white;
+}
+
+.remove-btn {
+    background-color: #f56565;
+    color: white;
+}
+
+.edit-btn:hover { background-color: #3182ce; }
+.save-btn:hover { background-color: #38a169; }
+.remove-btn:hover { background-color: #e53e3e; }
+
+.item-price {
+    color: #2d3748;
+    font-weight: 500;
+}
+
+.item-stock {
+    color: #4a5568;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (max-width: 768px) {
+    .admin-panel {
+        width: 95%;
+        padding: 20px;
+    }
+
+    .panel-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
 }
 
 .admin-panel h2 {

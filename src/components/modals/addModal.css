@@ -1,0 +1,98 @@
+.add-modal-content {
+    width: 100%;
+    max-width: 400px;
+  
+}
+
+.add-modal-title {
+    color: #2c3e50;
+    margin-bottom: 24px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.form-group {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group label {
+    color: #4a5568;
+    font-size: 0.9rem;
+    font-weight: 500;
+    text-transform: capitalize;
+}
+
+.form-input {
+    padding: 10px 0px;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    width: 100%;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+}
+
+/* Simplified number input styling */
+input[type="number"] {
+    appearance: textfield;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-cancel {
+    background-color: #e2e8f0;
+    color: #4a5568;
+}
+
+.btn-cancel:hover {
+    background-color: #cbd5e0;
+}
+
+.btn-confirm {
+    background-color: #3182ce;
+    color: white;
+}
+
+.btn-confirm:hover {
+    background-color: #2c5282;
+}
+
+.input-error {
+    border-color: #e53e3e;
+    background-color: #fff5f5;
+}
+
+.input-error:focus {
+    box-shadow: 0 0 0 3px rgba(229, 62, 62, 0.1);
+}
+
+.error-message {
+    color: #e53e3e;
+    font-size: 0.8rem;
+    margin-top: 4px;
+    display: block;
+} 

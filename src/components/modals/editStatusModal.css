@@ -1,0 +1,115 @@
+.status-modal-content {
+    padding: 24px 0px;
+    min-width: 320px;
+    background: white;
+    border-radius: 8px;
+}
+
+.status-modal-title {
+    color: #2d3748;
+    font-size: 1.5rem;
+    margin-bottom: 24px;
+    text-align: center;
+    font-weight: 600;
+}
+
+.status-options {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.status-option {
+    display: flex;
+    align-items: center;
+    padding: 12px 0px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.status-option:hover {
+    background-color: #f7fafc;
+}
+
+.status-radio {
+    width: 20px;
+    height: 20px;
+    margin-right: 12px;
+    cursor: pointer;
+    accent-color: #4299e1;
+}
+
+.status-label {
+    font-size: 1rem;
+    color: #4a5568;
+    font-weight: 500;
+}
+
+.status-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+.modal-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 0.95rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cancel-btn {
+    background-color: #e2e8f0;
+    color: #4a5568;
+}
+
+.cancel-btn:hover {
+    background-color: #cbd5e0;
+}
+
+.confirm-btn {
+    background-color: #4299e1;
+    color: white;
+}
+
+.confirm-btn:hover {
+    background-color: #3182ce;
+}
+
+/* Animation */
+.status-modal-content {
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive design */
+@media (max-width: 480px) {
+    .status-modal-content {
+        min-width: 280px;
+        padding: 20px 0px;
+    }
+
+    .status-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .modal-btn {
+        width: 100%;
+    }
+} 

@@ -15,6 +15,7 @@ function InventoryPanel() {
     const [currentlyEdit,setCurrentlyEdit]=useState(false);
     const [addingItem,setAddingItem]=useState(false);
     const [newItem,setNewItem]=useState(null)
+    const [validationError, setValidationError] = useState("");
     
     
     const removeProps={removeItemFn,removeOpen,setRemoveOpen}
@@ -76,6 +77,8 @@ function InventoryPanel() {
 
     async function addItemFn() {
         if(!newItem) return;
+
+        try{
         const response=await fetch("http://localhost:5000/item/add",{
             method:"PUT",
             headers: { "Content-Type": "application/json" },
@@ -88,12 +91,20 @@ function InventoryPanel() {
             setMessage(data.message)
         }
 
+        else{
+            setMessage(data.message)
+        }
         setNewItem(null);
         setCurrentlyEdit(false);
 
         setTimeout(() => {
         setMessage(null);
         }, 2000);
+
+
+        }catch(error){
+            console.log(error)
+        }
     }
 
 
@@ -130,9 +141,27 @@ function InventoryPanel() {
         }
     
         const saveButton=(id)=>{
-            setEditStatus((prev)=>({...prev , [id]:false}));
-            setUpdateItemId(id)
-            setCurrentlyEdit(false)
+            // Find the item being edited
+            const itemToUpdate = items.find(item => item._id === id);
+            
+            // Validate name and price
+            if (!itemToUpdate.name.trim()) {
+                setValidationError("Item name cannot be empty");
+                setTimeout(() => setValidationError(""), 3000);
+                return;
+            }
+            
+            if (itemToUpdate.price <= 0) {
+                setValidationError("Price must be greater than 0");
+                setTimeout(() => setValidationError(""), 3000);
+                return;
+            }
+
+            // If validation passes, proceed with save
+            setEditStatus((prev) => ({...prev, [id]: false}));
+            setUpdateItemId(id);
+            setCurrentlyEdit(false);
+            setValidationError("");
         }
 
         const removeButton=(id)=>{
@@ -144,48 +173,89 @@ function InventoryPanel() {
     return (
         <>
         <div className="admin-panel">
+            <h2 className="admin-panel-title">Admin Dashboard</h2>
 
-            <h2>Admin Dashboard</h2>
-
-            <div className="headings">
-                <h3>Manage Items</h3>
-                <button onClick={()=>setAddingItem(true)}>add</button>
+            <div className="panel-header">
+                <h3 className="section-title">Manage Items</h3>
+                <button className="add-item-btn" onClick={()=>setAddingItem(true)}>
+                    <span className="btn-text">Add Item</span>
+                </button>
             </div>
-            {message?(<p className="msg">{message}</p>):null}
+            
+            {message && <p className="status-message success">{message}</p>}
+            {validationError && <p className="status-message error">{validationError}</p>}
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Item name</th>
-                        <th>stock</th>
-                        <th>price</th>
-                        <th>edit</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {items.map(item => (
-                        <tr key={item._id}>
-                            {editStatus[item._id] ?(<td><input type="text" value={item.name} onChange={(e)=>changeName(item._id,e.target.value)}></input></td>)
-                                                    :(<td>{item.name}</td>)}
-                            {editStatus[item._id] ?(<td><input type="number" value={item.stock} onChange={(e)=>changeStock(item._id,e.target.value)}></input></td>)
-                                                    :(<td>{item.stock}</td>)}
-                            {editStatus[item._id] ?(<td><input type="number" value={item.price} onChange={(e)=>changePrice(item._id,e.target.value)}></input></td>)
-                                                    :(<td>{item.price}</td>)}    
-
-                            {editStatus[item._id]?(<td><div className="btngrp">
-                                                     <button onClick={()=>saveButton(item._id)}>save</button>
-                                                     <button onClick={()=>removeButton(item._id)}>remove</button>
-                                                     </div></td>)
-                                                    :(<td><button onClick={()=>{if(!currentlyEdit) editButton(item._id)}}>Edit</button></td>)}
+            <div className="table-container">
+                <table className="inventory-table">
+                    <thead>
+                        <tr>
+                            <th>Item Name</th>
+                            <th>Stock</th>
+                            <th>Price</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {items.map(item => (
+                            <tr key={item._id} className="inventory-row">
+                                <td>
+                                    {editStatus[item._id] ? (
+                                        <input 
+                                            type="text" 
+                                            className="edit-input"
+                                            value={item.name} 
+                                            onChange={(e)=>changeName(item._id,e.target.value)}
+                                        />
+                                    ) : (
+                                        <span className="item-name">{item.name}</span>
+                                    )}
+                                </td>
+                                <td>
+                                    {editStatus[item._id] ? (
+                                        <input 
+                                            type="number" 
+                                            className="edit-input"
+                                            value={item.stock} 
+                                            onChange={(e)=>changeStock(item._id,e.target.value)}
+                                        />
+                                    ) : (
+                                        <span className="item-stock">{item.stock}</span>
+                                    )}
+                                </td>
+                                <td>
+                                    {editStatus[item._id] ? (
+                                        <input 
+                                            type="number" 
+                                            className="edit-input"
+                                            value={item.price} 
+                                            onChange={(e)=>changePrice(item._id,e.target.value)}
+                                        />
+                                    ) : (
+                                        <span className="item-price">₹{item.price}</span>
+                                    )}
+                                </td>
+                                <td>
+                                    {editStatus[item._id] ? (
+                                        <div className="action-buttons">
+                                            <button className="save-btn" onClick={()=>saveButton(item._id)}>Save</button>
+                                            <button className="remove-btn" onClick={()=>removeButton(item._id)}>Remove</button>
+                                        </div>
+                                    ) : (
+                                        <button 
+                                            className="edit-btn" 
+                                            onClick={()=>{if(!currentlyEdit) editButton(item._id)}}>
+                                            Edit
+                                        </button>
+                                    )}
+                                </td>
                             </tr>
-                ))}
-
-                </tbody>
-            </table>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
         </div>
-        {removeOpen?(<RemoveModal {...removeProps}/>):null}
-        {addingItem?(<AddModal {...addProps}/>):null}
-
+        {removeOpen && <RemoveModal {...removeProps}/>}
+        {addingItem && <AddModal {...addProps}/>}
         </>
     );
 }
