@@ -21,10 +21,7 @@ function Header() {
                 <header>
                     <h1 className="logo">Store</h1>
     
-                      <button type="button" className="accbtn login" onClick={handleLogout}>Logout</button>
-                
-
-
+                      {isLoggedIn && <button type="button" className="accbtn login" onClick={handleLogout}>Logout</button>}
                 </header>
                 <hr />
                 <nav>

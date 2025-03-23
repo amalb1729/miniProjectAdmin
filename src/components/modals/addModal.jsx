@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "./modal.jsx";
 import "./addModal.css";
 
@@ -6,19 +6,24 @@ function AddModal({addingItem, setAddingItem, setNewItem}) {
     const [tempItem,setTempItem]=useState({name:"",price:0,stock:0})
     const [errors, setErrors] = useState({name: "", price: "", stock: ""})
 
-    const setItemPrice=(value)=>{
-        setTempItem((prev)=>({...prev,price:Math.max(value,0)}))
+    const setItemPrice=(e)=>{
+        setTempItem((prev)=>({...{...prev,price:Math.max(e.target.value,0)}}))
+        e.target.value=Math.max(e.target.value,0)
         setErrors(prev => ({...prev, price: ""}))
     }
-    const setItemName=(value)=>{
-        setTempItem((prev)=>({...prev,name:value}))
+    const setItemName=(e)=>{
+        setTempItem((prev)=>({...prev,name:e.target.value}))
         setErrors(prev => ({...prev, name: ""}))
     }
-    const setItemStock=(value)=>{
-        setTempItem((prev)=>({...prev,stock:Math.max(value,0)}))
+    const setItemStock=(e)=>{
+        setTempItem((prev)=>({...{...prev,stock:Math.max(e.target.value,0)}}))
+        e.target.value=Math.max(e.target.value,0)
         setErrors(prev => ({...prev, stock: ""}))
     }
 
+    useEffect(()=>{
+        console.log(tempItem)
+    },[tempItem])
     const validateForm = () => {
         let isValid = true
         const newErrors = {}
@@ -61,7 +66,7 @@ function AddModal({addingItem, setAddingItem, setNewItem}) {
                         id="iname" 
                         className={`form-input ${errors.name ? 'input-error' : ''}`}
                         value={tempItem.name} 
-                        onChange={(e)=>{setItemName(e.target.value)}}
+                        onChange={(e)=>{setItemName(e)}}
                     />
                     {errors.name && <span className="error-message">{errors.name}</span>}
                 </div>
@@ -73,7 +78,7 @@ function AddModal({addingItem, setAddingItem, setNewItem}) {
                         id="istock" 
                         className={`form-input ${errors.stock ? 'input-error' : ''}`}
                         value={tempItem.stock} 
-                        onChange={(e)=>{setItemStock(e.target.value)}}
+                        onChange={(e)=>{setItemStock(e)}}
                     />
                     {errors.stock && <span className="error-message">{errors.stock}</span>}
                 </div>
@@ -85,7 +90,7 @@ function AddModal({addingItem, setAddingItem, setNewItem}) {
                         id="iprice" 
                         className={`form-input ${errors.price ? 'input-error' : ''}`}
                         value={tempItem.price} 
-                        onChange={(e)=>{setItemPrice(e.target.value)}}
+                        onChange={(e)=>{setItemPrice(e)}}
                     />
                     {errors.price && <span className="error-message">{errors.price}</span>}
                 </div>

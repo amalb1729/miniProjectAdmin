@@ -6,7 +6,9 @@ import AddModal from "../modals/addModal.jsx";
 //import { useContext } from "react";
 
 function InventoryPanel() {
-    const [items, setItems] = useState([]);
+    const [items, setItems] = useState([]);// array of items 
+    const [sortedItems,setSortedItems]=useState([]);//sorted items
+
     const [editStatus,setEditStatus]=useState({});
     const [message,setMessage]=useState("");
     const [removeOpen,setRemoveOpen]=useState(false);
@@ -16,6 +18,43 @@ function InventoryPanel() {
     const [addingItem,setAddingItem]=useState(false);
     const [newItem,setNewItem]=useState(null)
     const [validationError, setValidationError] = useState("");
+
+    const [sortOrder,setSortOrder]=useState("default")
+    const [sortField,setSortField]=useState("")
+
+    const sortItems=(field)=>{
+
+        if(sortOrder=="default" || sortField=="" || sortField!=field){
+            if(field=="name")
+                setSortedItems([...items].sort((a, b) => {
+                    const nameA = a.name.toLowerCase();
+                    const nameB = b.name.toLowerCase();
+                    if (nameA < nameB) return -1;
+                    if (nameA > nameB) return 1;
+                    return 0;
+                    }))
+            else
+                setSortedItems([...items].sort((a,b)=>(a[field]-b[field]))) //ascending
+            setSortOrder("ascending")
+        }
+        else if(sortOrder=="ascending"){
+            setSortedItems((prev)=>[...prev].reverse()) // descending
+            setSortOrder("descending")
+        }
+        else{
+            setSortedItems([...items]) // default
+            setSortOrder("default")
+        }
+        setSortField(field)
+    }
+
+
+
+    useEffect(()=>{
+        if(items)
+            setSortedItems([...items])
+    },[items])
+
     
     
     const removeProps={removeItemFn,removeOpen,setRemoveOpen}
@@ -23,18 +62,20 @@ function InventoryPanel() {
 
     const changeName=(id,value)=>{
         setItems((prev)=>prev.map((item)=>item._id==id?{...item,name:value}:item))
+        console.log(typeof(value))
     }
     const changePrice=(id,value)=>{
         setItems((prev)=>prev.map((item)=>item._id==id?{...item,price:(Math.max(value,0))}:item))
     }
     const changeStock=(id,value)=>{
         setItems((prev)=>prev.map((item)=>item._id==id?{...item,stock:(Math.max(value,0))}:item))
+        console.log(typeof(value))
     }
 
     async function updateItemFn() {
 
         if(!updateItemId) return;
-        const response=await fetch("http://localhost:5000/item/update",{
+        const response=await fetch("/api/item/update",{
             method:"PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify( ...items.filter(element=>element._id==updateItemId))
@@ -55,7 +96,7 @@ function InventoryPanel() {
 
     async function removeItemFn() {
         if(!removeItemId) return;
-        const response=await fetch("http://localhost:5000/item/remove",{
+        const response=await fetch("/api/item/remove",{
             method:"DELETE",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ itemId:removeItemId })
@@ -79,7 +120,7 @@ function InventoryPanel() {
         if(!newItem) return;
 
         try{
-        const response=await fetch("http://localhost:5000/item/add",{
+        const response=await fetch("/api/item/add",{
             method:"PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(newItem)
@@ -111,7 +152,7 @@ function InventoryPanel() {
 
     // Fetch orders and items when admin logs in
     useEffect( () => {
-        fetch("http://localhost:5000/item/items")
+        fetch("/api/item/items")
             .then(res => res.json())
             .then(data => { setItems(data);
                     const Status={};
@@ -189,14 +230,14 @@ function InventoryPanel() {
                 <table className="inventory-table">
                     <thead>
                         <tr>
-                            <th>Item Name</th>
-                            <th>Stock</th>
-                            <th>Price</th>
+                            <th><button className="sort-btns" onClick={()=>sortItems("name")}>Item Name</button></th>
+                            <th> <button className="sort-btns" onClick={()=>sortItems("stock")}>Stock</button> </th>
+                            <th><button className="sort-btns" onClick={()=>sortItems("price")}>Price</button> </th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {items.map(item => (
+                        {sortedItems.map(item => (
                             <tr key={item._id} className="inventory-row">
                                 <td>
                                     {editStatus[item._id] ? (

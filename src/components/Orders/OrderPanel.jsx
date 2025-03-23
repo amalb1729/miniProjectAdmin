@@ -17,7 +17,7 @@ function OrderPanel() {
 
     // Fetch orders and items when admin logs in
     useEffect( () => {
-        fetch("http://localhost:5000/order/orders")
+        fetch("/api/order/orders")
             .then(res => res.json())
             .then((data) => {
                             console.log(data)
@@ -63,7 +63,7 @@ function OrderPanel() {
     const changeStatusFn= async(id,status,prevStatus)=>{
         try{
 
-            const response = await fetch("http://localhost:5000/order/orders/change", {
+            const response = await fetch("/api/order/orders/change", {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ id,status }),

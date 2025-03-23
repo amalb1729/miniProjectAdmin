@@ -1,7 +1,17 @@
 import Modal from "./modal";
 import "./orderModal.css";
+import { useState,useEffect} from "react";
 
 function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder}){
+
+
+    const [total,setTotal]=useState(0);
+    
+        useEffect(()=>{
+            showing?.orderedItems?.forEach((order, index) =>  setTotal((prev)=>(prev+(order.itemPrice*order.itemQuantity))));
+        },[])
+
+
     return(
         <Modal isOpen={modalIsOpen} closeModal={()=>{setModelIsOpen(false);hideFullOrder()}}>
                 <h2 className="modal-title">Order Details</h2>
@@ -13,6 +23,7 @@ function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder}){
                                 <th>Item Name</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
+                                <th>Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -24,6 +35,7 @@ function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder}){
                                         <td className="item-name">{order.itemName}</td>
                                         <td className="item-price">₹{order.itemPrice || "N/A"}</td>
                                         <td className="item-quantity">{order.itemQuantity}</td>
+                                        <td>{order.itemPrice*order.itemQuantity}</td>
                                     </tr>
                                 )
                             else
@@ -37,6 +49,8 @@ function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder}){
                                 )
                             }
                         )}
+                        <tr><td colspan="4">Grand Total</td>
+                        <td>{total}</td></tr>
                         </tbody>
                     </table>
                 </div>
