@@ -49,7 +49,7 @@ function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder}){
                                 )
                             }
                         )}
-                        <tr><td colspan="4">Grand Total</td>
+                        <tr><td colSpan="4">Grand Total</td>
                         <td>{total}</td></tr>
                         </tbody>
                     </table>
