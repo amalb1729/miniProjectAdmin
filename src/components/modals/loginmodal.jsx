@@ -66,12 +66,12 @@ function LoginModal() {
                 passRef.current.value = "";
             }
         } catch (error) {
-            console.log(error)
+            console.log(import.meta.env.VITE_API)
             setMessage("❌ Network error. Please try again.",error);
         }
     };
     
-
+    console.log(import.meta.env.VITE_API)
     return (
         <Modal isOpen={isLoginOpen} closeModal={() => { }}>
             <div className="modalContent">
