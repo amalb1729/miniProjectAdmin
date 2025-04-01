@@ -4,6 +4,7 @@ import OrderModal from "../modals/orderModal";
 import EditStatusModal from "../modals/editStatusModal";
 
 function PendingOrderPanel() {
+    const [order,setOrder]=useState([]);
     const [pendingOrders,setPendingOrders]=useState([])
     const [statusModal,setStatusModal]=useState(false)
     const [newStatus,setNewStatus]=useState({}) // for storing id and stastus of order for changing status
@@ -12,11 +13,39 @@ function PendingOrderPanel() {
     const [currentlyShowingId,setCurrentlyShowingId]=useState(null)
     const [modalIsOpen,setModelIsOpen]=useState(false);
 
+    const [filterSearch,setFilterSearch]=useState({department:"",semester:""})
+
+    const setDepartment=(value)=>{
+        console.log(value)
+        setFilterSearch((prev)=>({...prev,"department":value,"hi":"hello"}))
+    }
+    const setSemester=(value)=>{
+        setFilterSearch((prev)=>({...prev,"semester":value}))
+
+    }
+
+    useEffect(()=>{
+        if(filterSearch.department=="" && filterSearch.semester==""){
+                setPendingOrders([...order])
+        }
+        else if(filterSearch.department=="" )
+                setPendingOrders([...order.filter((element)=>(element.userId.semester==filterSearch.semester))])
+        else if(filterSearch.semester=="")
+                setPendingOrders([...order.filter((element)=>(element.userId.department==filterSearch.department))])
+        else    
+             setPendingOrders([...order.filter((element)=>(element.userId.department==filterSearch.department && element.userId.semester==filterSearch.semester))]) 
+
+        console.log(filterSearch)
+    },[filterSearch])
+
+    
     // Fetch orders and items when admin logs in
     useEffect( () => {
         fetch("/api/order/pendingOrders")
             .then(res => res.json())
             .then((data) => {
+                            console.log(data)
+                            setOrder(data)
                             setPendingOrders(data);
             })
             .catch(err=>console.log(err));
@@ -83,6 +112,30 @@ function PendingOrderPanel() {
         <>
         <div className="admin-panel">
             <div className="order-section">
+                
+                
+                <div className="filter">
+                    {/* Department Dropdown */}
+                        <select value={filterSearch.department} onChange={(e) => setDepartment(e.target.value)}>
+                            <option value="">Select Department</option>
+                            <option value="CSE">Computer Science</option>
+                            <option value="ECE">Electronics</option>
+                            <option value="EEE">Electrical</option>
+                            <option value="MECH">Mechanical</option>
+                            <option value="CIVIL">Civil</option>
+                        </select>
+
+                        {/* Semester Dropdown */}
+                        <select value={filterSearch.semester} onChange={(e) => setSemester(e.target.value)}>
+                            <option value="">Select Semester</option>
+                            {[...Array(8)].map((_, i) => (
+                                <option key={i + 1} value={i + 1}>{i + 1}</option>
+                            ))}                       
+                        </select>
+                </div>
+                
+                
+                
                 <h3 className="section-title">Pending Orders</h3>
                 <div className="table-container">
                     <table className="order-table">
