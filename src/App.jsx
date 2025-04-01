@@ -8,6 +8,7 @@ import InventoryPanel from "./components/Inventory/InvertoryPanel"
 import { BrowserRouter as Router, Routes, Route,Navigate  } from "react-router-dom";
 import { createContext } from 'react'
 import LoginModal from './components/modals/loginmodal'
+import StudentPanel from './components/Student/StudentPanel'
 //import RemoveModal from './components/modals/removeModal'
 
 export const myContext=createContext();
@@ -34,6 +35,8 @@ function App() {
             <Route path="completed" element={isLoggedIn ? <CompletedOrderPanel /> : <Navigate to="/" />} />
             <Route path="pending" element={isLoggedIn ? <PendingOrderPanel /> : <Navigate to="/" />} />
             <Route path="inventory" element={isLoggedIn ? <InventoryPanel /> : <Navigate to="/" />} />
+            <Route path="students" element={isLoggedIn ? <StudentPanel /> : <Navigate to="/" />} />
+            
             <Route path="/" element={<LoginModal />} />
             <Route path="/*" element={<LoginModal />} />
           </Routes>
