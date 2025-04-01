@@ -26,7 +26,8 @@ function Header() {
                 <hr />
                 <nav>
                     <ul className="nav-list">
-                        <li><NavLink to="/orders" className={({ isActive }) => isActive ? "act" : "inact"}>orders</NavLink></li>
+                        <li><NavLink to="/completed" className={({ isActive }) => isActive ? "act" : "inact"}>completed</NavLink></li>
+                        <li><NavLink to="/pending" className={({ isActive }) => isActive ? "act" : "inact"}>pending</NavLink></li>
                         <li><NavLink to="/inventory" className={({ isActive }) => isActive ? "act" : "inact"}>inventory</NavLink></li>
                     </ul>
                 </nav>

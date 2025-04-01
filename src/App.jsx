@@ -2,7 +2,8 @@ import { useState } from 'react'
 import './App.css'
 import Header from "./components/header/Header"
 import Footer from './components/footer/Footer'
-import OrderPanel from "./components/Orders/OrderPanel"
+import PendingOrderPanel from "./components/Orders/PendingOrderPanel"
+import CompletedOrderPanel from "./components/Orders/CompletedOrderPanel"
 import InventoryPanel from "./components/Inventory/InvertoryPanel"
 import { BrowserRouter as Router, Routes, Route,Navigate  } from "react-router-dom";
 import { createContext } from 'react'
@@ -30,7 +31,8 @@ function App() {
         <div className="content">
           <Routes>
             {/* Redirect to login if not logged in */}
-            <Route path="orders" element={isLoggedIn ? <OrderPanel /> : <Navigate to="/" />} />
+            <Route path="completed" element={isLoggedIn ? <CompletedOrderPanel /> : <Navigate to="/" />} />
+            <Route path="pending" element={isLoggedIn ? <PendingOrderPanel /> : <Navigate to="/" />} />
             <Route path="inventory" element={isLoggedIn ? <InventoryPanel /> : <Navigate to="/" />} />
             <Route path="/" element={<LoginModal />} />
             <Route path="/*" element={<LoginModal />} />

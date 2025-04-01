@@ -3,8 +3,7 @@ import "./orderPanel.css"
 import OrderModal from "../modals/orderModal";
 import EditStatusModal from "../modals/editStatusModal";
 
-function OrderPanel() {
-    const [orders, setOrders] = useState([]);
+function CompletedOrderPanel() {
     const [pendingOrders,setPendingOrders]=useState([])
     const [completedOrders,setCompletedOrders]=useState([])
     const [statusModal,setStatusModal]=useState(false)
@@ -17,15 +16,10 @@ function OrderPanel() {
 
     // Fetch orders and items when admin logs in
     useEffect( () => {
-        fetch("/api/order/orders")
+        fetch("/api/order/completedOrders")
             .then(res => res.json())
             .then((data) => {
-                            console.log(data)
-                            setPendingOrders(data.pendingOrders);
-                            setCompletedOrders(data.completedOrders);
-                            //let tempOrderShowing={}
-                            //data.forEach((element)=>{tempOrderShowing[element._id]=false});
-                            //setOrdershowing(tempOrderShowing);
+                            setCompletedOrders(data);
             })
             .catch(err=>console.log(err));
         
@@ -41,10 +35,7 @@ function OrderPanel() {
 
 
     const showFullOrder=(id,status)=>{
-        if(status=="Pending")
-            setShowing(pendingOrders.find((element)=>(element._id==id)))  
-        else
-            setShowing(completedOrders.find((element)=>(element._id==id))) 
+        setShowing(completedOrders.find((element)=>(element._id==id))) 
         setCurrentlyShowingId(id)   
         }
 
@@ -72,18 +63,12 @@ function OrderPanel() {
             const data = await response.json();
             console.log(data)
 
-            if(prevStatus=="Pending"){
-                const changedorder=pendingOrders.find((element)=>(element._id==id))
-                changedorder.status=status;
-                setPendingOrders((prev)=>(prev.filter((element)=>(element._id!=id))))
-                setCompletedOrders((prev)=>([changedorder,...prev]))
-            }
-            else{
-                const changedorder=completedOrders.find((element)=>(element._id==id))
-                changedorder.status=status;
+            if(status!="Pending")
+                setCompletedOrders((prev)=>(prev.map((element)=>(element._id!=id?(element):{...element,status}))))
+            else
                 setCompletedOrders((prev)=>(prev.filter((element)=>(element._id!=id))))
-                setPendingOrders((prev)=>([changedorder,...prev]))
-            }
+                
+
             
         
 
@@ -101,45 +86,6 @@ function OrderPanel() {
     return (
         <>
         <div className="admin-panel">
-            <div className="order-section">
-                <h3 className="section-title">Pending Orders</h3>
-                <div className="table-container">
-                    <table className="order-table">
-                        <thead>
-                            <tr>
-                                <th>Order ID</th>
-                                <th>User</th>
-                                <th>Status</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {pendingOrders.map(order => (
-                                <tr key={order._id} className="order-row">
-                                    <td className="order-id">{order._id}</td>
-                                    <td className="user-name">{order.userId.username}</td>
-                                    <td>
-                                        <span className="status pending">{order.status}</span>
-                                    </td>
-                                    <td className="action-cell">
-                                        <button 
-                                            className="action-btn view-btn" 
-                                            onClick={()=>{showFullOrder(order._id,order.status)}}>
-                                            View Details
-                                        </button>
-                                        <button 
-                                            className="action-btn edit-btn" 
-                                            onClick={()=>{editStatus(order._id,order.status)}}>
-                                            Edit Status
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
             <div className="order-section">
                 <h3 className="section-title">Completed/Cancelled Orders</h3>
                 <div className="table-container">
@@ -186,4 +132,4 @@ function OrderPanel() {
 }
 
 
-export default OrderPanel;
+export default CompletedOrderPanel;
