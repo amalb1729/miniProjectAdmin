@@ -6,6 +6,7 @@ function AddModal({addingItem, setAddingItem, setNewItem}) {
     const [tempItem,setTempItem]=useState({name:"",price:0,stock:0})
     const [errors, setErrors] = useState({name: "", price: "", stock: ""})
 
+    //destructing twice so that leading zeroes will be gone
     const setItemPrice=(e)=>{
         setTempItem((prev)=>({...{...prev,price:Math.max(e.target.value,0)}}))
         e.target.value=Math.max(e.target.value,0)
