@@ -123,10 +123,11 @@ function InventoryPanel() {
         const response=await fetch("/api/item/update",{
             method:"PUT",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify( ...items.filter(element=>element._id==updateItemId))
+            body: JSON.stringify(...sortedItems.filter(element=>element._id==updateItemId))
         })
         
         const data=await response.json()
+        console.log(data)
         if(response.ok){
             setMessage(data.message)
         }
