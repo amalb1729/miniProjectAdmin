@@ -1,9 +1,6 @@
 import { useEffect, useState } from "react";
 import "./StudentPanel.css"
-
-
-
-
+import { IKImage } from 'imagekitio-react';
 function StudentPanel(){
     
     const [students,setStudents]=useState([]);
@@ -102,6 +99,7 @@ function StudentPanel(){
                 <th>Name</th>
                 <th>Department</th>
                 <th>Semester</th>
+                <th>image</th>
               </tr>
             </thead>
             <tbody>
@@ -110,6 +108,17 @@ function StudentPanel(){
                   <td>{student.name}</td>
                   <td>{student.department}</td>
                   <td>{student.semester}</td>
+                  <td>
+                                        <IKImage
+                                        path={student.pictureURL}
+                                        urlEndpoint={import.meta.env.VITE_PUBLIC_URL_ENDPOINT}
+                                        transformation={[{
+                                            height: 100,
+                                            width: 100
+                                          }]}
+                                        onError={(e) => (e.target.src = "https://placehold.co/100")} alt={student.name}
+                                        />
+                                </td>
                 </tr>
               ))}
             </tbody>

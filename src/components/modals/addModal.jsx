@@ -96,7 +96,7 @@ function AddModal({addingItem, setAddingItem, setNewItem}) {
                     />
                     {errors.price && <span className="error-message">{errors.price}</span>}
                 </div>
-
+                
                 <div className="modal-actions">
                     <button 
                         className="btn btn-cancel"

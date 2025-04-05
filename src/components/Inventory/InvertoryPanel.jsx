@@ -4,10 +4,12 @@ import RemoveModal from "../modals/removeModal.jsx";
 import AddModal from "../modals/addModal.jsx";
 //import { myContext } from "../../App";
 //import { useContext } from "react";
-
+import { IKImage } from 'imagekitio-react';
+import ImageUploader from "./imageUploader.jsx";
 function InventoryPanel() {
     const [items, setItems] = useState([]);// array of items where finalised changes are made
-    const [sortedItems,setSortedItems]=useState([]);//used for displaying items and making changes, whenever items array changes it will become that
+    const [sortedItems,setSortedItems]=useState([]);//used for sorting
+    const [finalItems,setFinalItems]=useState([]);//used for displaying 
 
     const [editStatus,setEditStatus]=useState({});//used for storing all item's edit status
     const [message,setMessage]=useState("");//error or success message
@@ -22,6 +24,42 @@ function InventoryPanel() {
     const [sortOrder,setSortOrder]=useState("default")//order for sorting
     const [sortField,setSortField]=useState("")//sorting field
 
+    const [query,setQuery]=useState("")
+    const [filterItems,setFilteredItems]=useState([])
+    const [change,setChange]=useState(0);
+
+    useEffect(()=>{
+        if(query.trim()==="")
+          setFinalItems([...sortedItems]);
+        if(query && items){
+          setFinalItems([...sortedItems.filter((item)=>(item.name.toLowerCase().includes(query.toLowerCase())))])
+        }
+    },[query,items,sortedItems])
+
+    const sortItems=(field)=>{
+        if(sortOrder=="default" || sortField=="" || sortField!=field){
+            if(field=="name")
+                setSortedItems([...items].sort((a, b) => {
+                    const nameA = a.name.toLowerCase();
+                    const nameB = b.name.toLowerCase();
+                    if (nameA < nameB) return -1;
+                    if (nameA > nameB) return 1;
+                    return 0;
+                    }))
+            else
+                setSortedItems([...items].sort((a,b)=>(a[field]-b[field]))) //ascending
+                setSortOrder("ascending")
+        }
+        else if(sortOrder=="ascending"){
+            setSortedItems((prev)=>[...prev].reverse()) // descending
+            setSortOrder("descending")
+        }
+        else{
+            setSortedItems([...items]) // default
+            setSortOrder("default")
+        }
+        setSortField(field)
+    }
     // Fetch orders and items when admin logs in
     useEffect( () => {
         fetch("/api/item/items")
@@ -50,31 +88,6 @@ function InventoryPanel() {
             setSortedItems([...items])
     },[items]) //runs when item changes
     
-    const sortItems=(field)=>{
-        
-        if(sortOrder=="default" || sortField=="" || sortField!=field){
-            if(field=="name")
-                setSortedItems([...items].sort((a, b) => {
-                    const nameA = a.name.toLowerCase();
-                    const nameB = b.name.toLowerCase();
-                    if (nameA < nameB) return -1;
-                    if (nameA > nameB) return 1;
-                    return 0;
-                    }))
-            else
-                setSortedItems([...items].sort((a,b)=>(a[field]-b[field]))) //ascending
-            setSortOrder("ascending")
-        }
-        else if(sortOrder=="ascending"){
-            setSortedItems((prev)=>[...prev].reverse()) // descending
-            setSortOrder("descending")
-        }
-        else{
-            setSortedItems([...items]) // default
-            setSortOrder("default")
-        }
-        setSortField(field)
-    }
 
 
 
@@ -254,18 +267,46 @@ function InventoryPanel() {
             {message && <p className="status-message success">{message}</p>}
             {validationError && <p className="status-message error">{validationError}</p>}
 
+
+            <div className="search-container">
+                <div className="search-box">
+                <input 
+                    type="text" 
+                    value={query} 
+                    onChange={(e)=>setQuery(e.target.value)} 
+                    placeholder="Search items..."
+                    className="search-input"
+                />
+                <i className="search-icon">🔍</i>
+                </div>
+                {/* {!filterItems ? null : (
+                <div className="search-results">
+                    {filterItems.map((element) => (
+                    <div 
+                        key={element.id} 
+                        className="search-result-item"
+                        onClick={() => {scroll(element._id); setQuery("")}}
+                    >
+                        <span>{element.name}</span>
+                    </div>
+                    ))}
+                </div>
+                )} */}
+            </div>
+
             <div className="table-container">
                 <table className="inventory-table">
                     <thead>
                         <tr>
-                            <th><button className="sort-btns" onClick={()=>sortItems("name")}>Item Name</button></th>
-                            <th> <button className="sort-btns" onClick={()=>sortItems("stock")}>Stock</button> </th>
-                            <th><button className="sort-btns" onClick={()=>sortItems("price")}>Price</button> </th>
+                            <th><button className="sort-btns" onClick={()=>sortItems("name")}>{`Item Name ${sortField=="name"?(sortOrder=="ascending"?("↑"):(sortOrder=="descending"?("↓"):(""))):("")}`}</button></th>
+                            <th> <button className="sort-btns" onClick={()=>sortItems("stock")}>{`Item Stock ${sortField=="stock"?(sortOrder=="ascending"?("↑"):(sortOrder=="descending"?("↓"):(""))):("")}`}</button> </th>
+                            <th><button className="sort-btns" onClick={()=>sortItems("price")}>{`Item Price ${sortField=="price"?(sortOrder=="ascending"?("↑"):(sortOrder=="descending"?("↓"):(""))):("")}`}</button> </th>
+                            <th>images</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {sortedItems.map((item,index) => (
+                        {finalItems.map((item,index) => (
                             <tr key={item._id} className="inventory-row">
                                 <td>
                                     {editStatus[item._id] ? (
@@ -302,6 +343,20 @@ function InventoryPanel() {
                                     ) : (
                                         <span className="item-price">₹{item.price}</span>
                                     )}
+                                </td>
+                                <td>{editStatus[item._id] ? 
+                                
+                                (<ImageUploader item={item}/>)
+                                :(<IKImage
+                                        path={item.pictureURL}
+                                        urlEndpoint={import.meta.env.VITE_PUBLIC_URL_ENDPOINT}
+                                        transformation={[{
+                                            height: 100,
+                                            width: 100
+                                          }]}
+                                        onError={(e) => (e.target.src = "https://placehold.co/100")} alt={item.name}
+                                        />)
+                                    }
                                 </td>
                                 <td>
                                     {editStatus[item._id] ? (
