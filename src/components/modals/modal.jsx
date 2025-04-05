@@ -7,7 +7,7 @@ function Modal({ isOpen, closeModal, children }) {
   return (
     <div className="modalOverlay" onClick={closeModal}>
       <div className="modalContainer" onClick={(e) => e.stopPropagation()}>
-        <button className="closeBtn" onClick={closeModal}>X</button>
+        {/* <button className="closeBtn" onClick={closeModal}>X</button> */}
         {children} {/* This allows passing different forms inside */}
       </div>
     </div>

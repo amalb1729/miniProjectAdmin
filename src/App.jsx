@@ -28,7 +28,7 @@ function App() {
   return (
     <div className="app">
       <myContext.Provider value={{ isLoginOpen, setLoginOpen, isLoggedIn, setLoggedIn }}>
-        <Header />
+        {isLoggedIn && <Header />}
         <div className="content">
           <Routes>
             {/* Redirect to login if not logged in */}
@@ -41,7 +41,7 @@ function App() {
             <Route path="/*" element={<LoginModal />} />
           </Routes>
         </div>
-        <Footer />
+        {isLoggedIn && <Footer />}
       </myContext.Provider>
     </div>
   );

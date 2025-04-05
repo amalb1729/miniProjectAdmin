@@ -48,6 +48,7 @@ function AddModal({addingItem, setAddingItem, setNewItem}) {
 
     const handleSubmit = () => {
         if (validateForm()) {
+            setTempItem((prev)=>({...prev,name:tempItem.name.trim().replace(/\s+/g, ' ')}))
             setNewItem(tempItem)
             setAddingItem(false)
         }
