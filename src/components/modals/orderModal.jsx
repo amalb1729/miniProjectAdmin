@@ -54,6 +54,8 @@ function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder}){
                         </tbody>
                     </table>
                 </div>
+
+                
         </Modal>
     )
 }

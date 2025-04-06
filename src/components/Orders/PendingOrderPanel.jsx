@@ -2,8 +2,9 @@ import { useEffect, useState } from "react";
 import "./orderPanel.css"
 import OrderModal from "../modals/orderModal";
 import EditStatusModal from "../modals/editStatusModal";
-
+import QrScanner from "../QRscanner";
 function PendingOrderPanel() {
+
     const [order,setOrder]=useState([]);
     const [pendingOrders,setPendingOrders]=useState([])
     const [statusModal,setStatusModal]=useState(false)
@@ -14,6 +15,13 @@ function PendingOrderPanel() {
     const [modalIsOpen,setModelIsOpen]=useState(false);
 
     const [filterSearch,setFilterSearch]=useState({department:"",semester:""})
+
+
+
+
+    const handleScanSuccess = (text) => {
+        showFullOrder(text,"Pending","scan")
+    };
 
     const setDepartment=(value)=>{
         console.log(value)
@@ -111,6 +119,10 @@ function PendingOrderPanel() {
     return (
         <>
         <div className="admin-panel">
+            <div>
+            <h2>QR Code Scanner</h2>
+                <QrScanner onScanSuccess={handleScanSuccess} />
+            </div>
             <div className="order-section">
                 
                 
