@@ -15,12 +15,12 @@ function PendingOrderPanel() {
     const [modalIsOpen,setModelIsOpen]=useState(false);
 
     const [filterSearch,setFilterSearch]=useState({department:"",semester:""})
-
-
-
+    const [result,setResult]=useState("")
 
     const handleScanSuccess = (text) => {
-        showFullOrder(text,"Pending","scan")
+        showFullOrder(text,"Pending");
+        editStatus(text,"Pending");
+        setResult(text);
     };
 
     const setDepartment=(value)=>{
@@ -71,7 +71,8 @@ function PendingOrderPanel() {
 
     const showFullOrder=(id,status)=>{
             setShowing(pendingOrders.find((element)=>(element._id==id)))  
-        setCurrentlyShowingId(id)   
+            setModelIsOpen(true)
+            setCurrentlyShowingId(id)   
         }
 
     const hideFullOrder=()=>{
@@ -113,16 +114,15 @@ function PendingOrderPanel() {
 
     
 
-    const orderModalProps={modalIsOpen,setModelIsOpen,showing,hideFullOrder}
-    const statusModalProps={statusModal,setStatusModal,newStatus,setNewStatus,changeStatusFn}
+    const orderModalProps={modalIsOpen,setModelIsOpen,showing,hideFullOrder,statusModal,setStatusModal,newStatus,setNewStatus,changeStatusFn}
+    // const statusModalProps={statusModal,setStatusModal,newStatus,setNewStatus,changeStatusFn}
 
     return (
         <>
         <div className="admin-panel">
             <div>
             <h2>QR Code Scanner</h2>
-                <QrScanner onScanSuccess={handleScanSuccess} />
-            </div>
+        {(!statusModal && !modalIsOpen) && <QrScanner onScanSuccess={handleScanSuccess}/>}</div>
             <div className="order-section">
                 
                 
@@ -153,7 +153,7 @@ function PendingOrderPanel() {
                     <table className="order-table">
                         <thead>
                             <tr>
-                                <th>Order ID</th>
+                                {/* <th>Order ID</th> */}
                                 <th>User</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -162,7 +162,7 @@ function PendingOrderPanel() {
                         <tbody>
                             {pendingOrders.map(order => (
                                 <tr key={order._id} className="order-row">
-                                    <td className="order-id">{order._id}</td>
+                                    {/* <td className="order-id">{order._id}</td> */}
                                     <td className="user-name">{order.userId.username}</td>
                                     <td>
                                         <span className="status pending">{order.status}</span>
@@ -170,14 +170,14 @@ function PendingOrderPanel() {
                                     <td className="action-cell">
                                         <button 
                                             className="action-btn view-btn" 
-                                            onClick={()=>{showFullOrder(order._id,order.status)}}>
+                                            onClick={()=>{showFullOrder(order._id,order.status);editStatus(order._id,order.status)}}>
                                             View Details
                                         </button>
-                                        <button 
+                                        {/* <button 
                                             className="action-btn edit-btn" 
                                             onClick={()=>{editStatus(order._id,order.status)}}>
                                             Edit Status
-                                        </button>
+                                        </button> */}
                                     </td>
                                 </tr>
                             ))}
@@ -187,7 +187,7 @@ function PendingOrderPanel() {
             </div>
         </div>
         {modalIsOpen && showing ?(<OrderModal {...orderModalProps}/>):null}
-        {statusModal?<EditStatusModal {...statusModalProps}/>:null}
+        {/* {statusModal?<EditStatusModal {...statusModalProps}/>:null} */}
         </>
     );
 }

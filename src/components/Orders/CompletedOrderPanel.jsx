@@ -108,8 +108,8 @@ function CompletedOrderPanel() {
 
     
 
-    const orderModalProps={modalIsOpen,setModelIsOpen,showing,hideFullOrder}
-    const statusModalProps={statusModal,setStatusModal,newStatus,setNewStatus,changeStatusFn}
+    const orderModalProps={modalIsOpen,setModelIsOpen,showing,hideFullOrder,statusModal,setStatusModal,newStatus,setNewStatus,changeStatusFn}
+    // const statusModalProps={statusModal,setStatusModal,newStatus,setNewStatus,changeStatusFn}
 
     return (
         <>
@@ -144,7 +144,7 @@ function CompletedOrderPanel() {
                     <table className="order-table">
                         <thead>
                             <tr>
-                                <th>Order ID</th>
+                                {/* <th>Order ID</th> */}
                                 <th>User</th>
                                 <th>Status</th>
                                 <th>Actions</th>
@@ -153,7 +153,7 @@ function CompletedOrderPanel() {
                         <tbody>
                             {completedOrders.map(order => (
                                 <tr key={order._id} className="order-row">
-                                    <td className="order-id">{order._id}</td>
+                                    {/* <td className="order-id">{order._id}</td> */}
                                     <td className="user-name">{order.userId.username}</td>
                                     <td>
                                         <span className={`status ${order.status}`}>{order.status}</span>
@@ -161,14 +161,14 @@ function CompletedOrderPanel() {
                                     <td className="action-cell">
                                         <button 
                                             className="action-btn view-btn" 
-                                            onClick={()=>{showFullOrder(order._id,order.status)}}>
+                                            onClick={()=>{showFullOrder(order._id,order.status);editStatus(order._id,order.status)}}>
                                             View Details
                                         </button>
-                                        <button 
+                                        {/* <button 
                                             className="action-btn edit-btn" 
                                             onClick={()=>{editStatus(order._id,order.status)}}>
                                             Edit Status
-                                        </button>
+                                        </button> */}
                                     </td>
                                 </tr>
                             ))}
@@ -178,7 +178,7 @@ function CompletedOrderPanel() {
             </div>
         </div>
         {modalIsOpen && showing ?(<OrderModal {...orderModalProps}/>):null}
-        {statusModal?<EditStatusModal {...statusModalProps}/>:null}
+        {/* {statusModal?<EditStatusModal {...statusModalProps}/>:null} */}
         </>
     );
 }

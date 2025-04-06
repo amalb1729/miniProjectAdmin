@@ -3,6 +3,7 @@
     min-width: 320px;
     background: white;
     border-radius: 8px;
+   
 }
 
 .status-modal-title {
@@ -15,7 +16,8 @@
 
 .status-options {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-evenly;
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -23,6 +25,7 @@
 .status-option {
     display: flex;
     align-items: center;
+    justify-content:center ;
     padding: 12px 0px;
     border-radius: 8px;
     cursor: pointer;
@@ -49,9 +52,10 @@
 
 .status-modal-actions {
     display: flex;
-    justify-content: flex-end;
+    justify-content: center;
     gap: 12px;
     margin-top: 24px;
+
 }
 
 .modal-btn {
