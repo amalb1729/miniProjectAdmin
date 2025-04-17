@@ -16,7 +16,7 @@ function CompletedOrderPanel() {
     const [modalIsOpen,setModelIsOpen]=useState(false);
 
 
-    const [filterSearch,setFilterSearch]=useState({department:"",semester:""})
+    const [filterSearch,setFilterSearch]=useState({department:"",semester:"",status:""})
 
     const setDepartment=(value)=>{
         console.log(value)
@@ -26,19 +26,32 @@ function CompletedOrderPanel() {
         setFilterSearch((prev)=>({...prev,"semester":value}))
 
     }
-     useEffect(()=>{
-            if(filterSearch.department=="" && filterSearch.semester==""){
-                    setCompletedOrders([...order])
-            }
-            else if(filterSearch.department=="" )
-                    setCompletedOrders([...order.filter((element)=>(element.userId.semester==filterSearch.semester))])
-            else if(filterSearch.semester=="")
-                    setCompletedOrders([...order.filter((element)=>(element.userId.department==filterSearch.department))])
-            else    
-                 setCompletedOrders([...order.filter((element)=>(element.userId.department==filterSearch.department && element.userId.semester==filterSearch.semester))]) 
-    
-            console.log(filterSearch)
-        },[filterSearch])
+    useEffect(() => {
+        let filteredOrders = [...order];
+
+        // Apply department filter
+        if (filterSearch.department) {
+            filteredOrders = filteredOrders.filter(element => 
+                element.userId.department === filterSearch.department
+            );
+        }
+
+        // Apply semester filter
+        if (filterSearch.semester) {
+            filteredOrders = filteredOrders.filter(element => 
+                element.userId.semester == filterSearch.semester
+            );
+        }
+
+        // Apply status filter
+        if (filterSearch.status) {
+            filteredOrders = filteredOrders.filter(element => 
+                element.status === filterSearch.status
+            );
+        }
+
+        setCompletedOrders(filteredOrders);
+    }, [filterSearch, order]);
 
     
     // Fetch orders and items when admin logs in
@@ -116,62 +129,113 @@ function CompletedOrderPanel() {
         <div className="admin-panel">
             <div className="order-section">
                 
-            <div className="filter">
-                    {/* Department Dropdown */}
-                    <select value={filterSearch.department} onChange={(e) => setDepartment(e.target.value)}>
-                            <option value="">Select Department</option>
-                            <option value="CSE">Computer Science</option>
-                            <option value="ECE">Electronics</option>
-                            <option value="EEE">Electrical</option>
-                            <option value="MECH">Mechanical</option>
-                            <option value="CIVIL">Civil</option>
-                        </select>
+            <div className="filter-section">
+                    <div className="filter-title">
+                        <span className="filter-icon">🔍</span>
+                        Filter Orders
+                    </div>
+                    <div className="filter-controls">
+                        {/* Department Dropdown */}
+                        <div className="filter-group">
+                            <label>Department</label>
+                            <select 
+                                value={filterSearch.department} 
+                                onChange={(e) => setDepartment(e.target.value)}
+                                className="filter-select"
+                            >
+                                <option value="">All Departments</option>
+                                <option value="CSE">Computer Science</option>
+                                <option value="ECE">Electronics</option>
+                                <option value="EEE">Electrical</option>
+                                <option value="MECH">Mechanical</option>
+                                <option value="CIVIL">Civil</option>
+                            </select>
+                        </div>
 
                         {/* Semester Dropdown */}
-                        <select value={filterSearch.semester} onChange={(e) => setSemester(e.target.value)}>
-                            <option value="">Select Semester</option>
-                            {[...Array(8)].map((_, i) => (
-                                <option key={i + 1} value={i + 1}>{i + 1}</option>
-                            ))}                       
-                        </select>
+                        <div className="filter-group">
+                            <label>Semester</label>
+                            <select 
+                                value={filterSearch.semester} 
+                                onChange={(e) => setSemester(e.target.value)}
+                                className="filter-select"
+                            >
+                                <option value="">All Semesters</option>
+                                {[...Array(8)].map((_, i) => (
+                                    <option key={i + 1} value={i + 1}>Semester {i + 1}</option>
+                                ))}                       
+                            </select>
+                        </div>
+
+                        {/* Status Dropdown */}
+                        <div className="filter-group">
+                            <label>Status</label>
+                            <select 
+                                value={filterSearch.status || ""} 
+                                onChange={(e) => setFilterSearch(prev => ({ ...prev, status: e.target.value }))}
+                                className="filter-select"
+                            >
+                                <option value="">All Status</option>
+                                <option value="Completed">Completed</option>
+                                <option value="Cancelled">Cancelled</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 
                 
 
                 
-                <h3 className="section-title">Completed/Cancelled Orders</h3>
+                <div className="section-header">
+                    <h3 className="section-title">Completed/Cancelled Orders</h3>
+                    <div className="order-count">{completedOrders.length} orders</div>
+                </div>
                 <div className="table-container">
                     <table className="order-table">
                         <thead>
                             <tr>
-                                {/* <th>Order ID</th> */}
                                 <th>User</th>
+                                <th>Department</th>
+                                <th>Semester</th>
                                 <th>Status</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {completedOrders.map(order => (
-                                <tr key={order._id} className="order-row">
-                                    {/* <td className="order-id">{order._id}</td> */}
-                                    <td className="user-name">{order.userId.username}</td>
-                                    <td>
-                                        <span className={`status ${order.status}`}>{order.status}</span>
-                                    </td>
-                                    <td className="action-cell">
-                                        <button 
-                                            className="action-btn view-btn" 
-                                            onClick={()=>{showFullOrder(order._id,order.status);editStatus(order._id,order.status)}}>
-                                            View Details
-                                        </button>
-                                        {/* <button 
-                                            className="action-btn edit-btn" 
-                                            onClick={()=>{editStatus(order._id,order.status)}}>
-                                            Edit Status
-                                        </button> */}
+                            {completedOrders.length === 0 ? (
+                                <tr>
+                                    <td colSpan="5" className="empty-state">
+                                        <div className="empty-state-content">
+                                            <span className="empty-icon">📭</span>
+                                            <p>No orders found</p>
+                                        </div>
                                     </td>
                                 </tr>
-                            ))}
+                            ) : (
+                                completedOrders.map(order => (
+                                    <tr key={order._id} className="order-row">
+                                        <td className="user-name">
+                                            <div className="user-info">
+                                                <span className="user-icon">👤</span>
+                                                {order.userId.username}
+                                            </div>
+                                        </td>
+                                        <td className="department">{order.userId.department}</td>
+                                        <td className="semester">Semester {order.userId.semester}</td>
+                                        <td>
+                                            <span className={`status ${order.status}`}>{order.status}</span>
+                                        </td>
+                                        <td className="action-cell">
+                                            <button 
+                                                className="action-btn view-btn" 
+                                                onClick={() => {showFullOrder(order._id,order.status);editStatus(order._id,order.status)}}
+                                            >
+                                                View Details
+                                            </button>
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
