@@ -1,12 +1,11 @@
-
 import { IKContext, IKImage, IKUpload } from 'imagekitio-react';
 import { useEffect, useState } from 'react';
 
-
-function ImageUploader({item}){
-
-const [imageKey, setImageKey] = useState(Date.now());
-const [url,setUrl]=useState(item.pictureURL)
+function ImageUploader({item}) {
+    const [imageKey, setImageKey] = useState(Date.now());
+    const [url, setUrl] = useState(item.pictureURL);
+    const [isUploading, setIsUploading] = useState(false);
+    const [uploadError, setUploadError] = useState("");
 
 const authenticator =  async () => {
     try {
@@ -25,45 +24,97 @@ const authenticator =  async () => {
 };
 
 const onError = err => {
-    console.log("Error", err);
-  };
+    console.error("Upload Error:", err);
+    setUploadError("Failed to upload image");
+    setIsUploading(false);
+};
   
 const onSuccess = async(res) => {
-    console.log("Success", res);
-    console.log(res.filePath);
     try {
         const response = await fetch(`/api/item/upload/${item._id}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ url:res.filePath })
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ url: res.filePath })
         });
-        const data=await response.json()
-        console.log(data)
-        setUrl(data.url)
+        if (!response.ok) {
+            throw new Error(`Upload failed with status ${response.status}`);
+        }
+        const data = await response.json();
+        setUrl(data.url);
         setImageKey(Date.now());
-    }catch (error) {
-        console.log("❌ Error uploading image",error);
+        setUploadError("");
+    } catch (error) {
+        console.error("❌ Error uploading image:", error);
+        setUploadError("Failed to save image");
+    } finally {
+        setIsUploading(false);
     }
-}
+};
 
 
 
 
 
     return(
-        <>
-        <IKContext publicKey={import.meta.env.VITE_PUBLIC_PUBLIC_KEY} urlEndpoint={import.meta.env.VITE_PUBLIC_URL_ENDPOINT} authenticator={authenticator} >
-            <IKImage   key={imageKey} path={url} urlEndpoint={import.meta.env.VITE_PUBLIC_URL_ENDPOINT} 
-            transformation={[{
-                height: 100,
-                width: 100
-              }]}
-            onError={(e) => (e.target.src = "https://placehold.co/100")} />
-            <IKUpload  useUniqueFileName={true} onError={onError} onSuccess={onSuccess} folder={"/users"}/>
-        </IKContext>
-        </>
-
-
+        <div className="image-upload-container">
+            <div className="image-preview-container">
+                <IKImage
+                    key={imageKey}
+                    path={url}
+                    urlEndpoint={import.meta.env.VITE_PUBLIC_URL_ENDPOINT}
+                    transformation={[{
+                        height: 100,
+                        width: 100
+                    }]}
+                    className="image-preview"
+                    onError={(e) => (e.target.src = "https://placehold.co/100")}
+                    alt={item.name}
+                />
+            </div>
+            
+            <div className="upload-controls">
+                <div className="upload-button-wrapper">
+                    <button 
+                        type="button" 
+                        className={`upload-button ${isUploading ? 'uploading' : ''}`}
+                        disabled={isUploading}
+                    >
+                        <span className="upload-icon">📸</span>
+                        {isUploading ? 'Uploading...' : 'Change Image'}
+                    </button>
+                    <IKContext
+                        publicKey={import.meta.env.VITE_PUBLIC_PUBLIC_KEY}
+                        urlEndpoint={import.meta.env.VITE_PUBLIC_URL_ENDPOINT}
+                        authenticator={authenticator}
+                    >
+                        <IKUpload
+                            useUniqueFileName={true}
+                            onError={onError}
+                            onSuccess={onSuccess}
+                            onUploadStart={() => {
+                                setIsUploading(true);
+                                setUploadError("");
+                            }}
+                            folder={"/items"}
+                            style={{ 
+                                opacity: 0, 
+                                position: 'absolute',
+                                top: 0,
+                                left: 0,
+                                width: '100%',
+                                height: '100%',
+                                cursor: 'pointer'
+                            }}
+                        />
+                    </IKContext>
+                </div>
+                {uploadError ? (
+                    <span className="error-message">{uploadError}</span>
+                ) : (
+                    <span className="upload-text">{isUploading ? 'Please wait...' : 'Click to upload a new image'}</span>
+                )}
+            </div>
+        </div>
     )
 
 
