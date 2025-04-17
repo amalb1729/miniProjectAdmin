@@ -1,3 +1,4 @@
+
 import React, { useEffect, useRef } from "react";
 import { Html5QrcodeScanner } from "html5-qrcode";
 import "./qrscanner.css"
@@ -12,8 +13,9 @@ const QrScanner = ({ onScanSuccess }) => {
 
     scanner.render(
       (decodedText) => {
-        scanner.clear(); // stop scanning after success
+        //scanner.pause(); // stop scanning after success
         onScanSuccess(decodedText);
+        //scanner.resume();
       },
       (error) => {
         // handle scan errors or just ignore
@@ -23,7 +25,7 @@ const QrScanner = ({ onScanSuccess }) => {
     return () => {
       scanner.clear().catch((error) => console.error("Clear scanner error:", error));
     };
-  }, [onScanSuccess]);
+},[]);
 
   return (<>
         <div id="qr-reader" ref={scannerRef} />

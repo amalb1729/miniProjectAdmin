@@ -16,11 +16,15 @@ function PendingOrderPanel() {
 
     const [filterSearch,setFilterSearch]=useState({department:"",semester:""})
     const [result,setResult]=useState("")
+    const [qrKey,setQrKey]=useState(Date.now())
 
-    const handleScanSuccess = (text) => {
-        showFullOrder(text,"Pending");
-        editStatus(text,"Pending");
-        setResult(text);
+    const handleScanSuccess = (id) => {
+        showFullOrder(id,"Pending");
+        editStatus(id,"Pending");
+        console.log(id,"Pending","from scan")
+
+        // showFullOrder(order._id,order.status);
+        // editStatus(order._id,order.status)
     };
 
     const setDepartment=(value)=>{
@@ -61,18 +65,23 @@ function PendingOrderPanel() {
     }, []);
 
 
+    // useEffect(()=>{
+    //     if(showing){
+    //         setModelIsOpen(true)
+    //     }
+
+    // },[showing])
     useEffect(()=>{
-        if(showing){
-            setModelIsOpen(true)
-        }
-
-    },[showing])
-
+        console.log("pending order:",pendingOrders)
+    },[pendingOrders])
 
     const showFullOrder=(id,status)=>{
-            setShowing(pendingOrders.find((element)=>(element._id==id)))  
+            setShowing(order.find((element)=>(element._id==id)))  
+            console.log("pending order:",order)
+            console.log("setshowing inside value",order.find((element)=>{console.log(element._id,id,"inside find");return element._id==id}))
             setModelIsOpen(true)
             setCurrentlyShowingId(id)   
+            console.log("called showfullorder")
         }
 
     const hideFullOrder=()=>{
@@ -84,7 +93,7 @@ function PendingOrderPanel() {
     const editStatus= (id,status)=>{
         setNewStatus((prev)=>({...prev,["id"]:id,["status"]:status}))
         setStatusModal(true)
-        console.log(id)
+        console.log("called editstatus")
     }
 
     const changeStatusFn= async(id,status,prevStatus)=>{
@@ -100,9 +109,9 @@ function PendingOrderPanel() {
             console.log(data)
 
             if(status=="Pending")
-                setPendingOrders((prev)=>(prev.map((element)=>(element._id!=id?(element):{...element,status}))))
+                setOrder((prev)=>(prev.map((element)=>(element._id!=id?(element):{...element,status}))))
             else
-                setPendingOrders((prev)=>(prev.filter((element)=>(element._id!=id))))
+                setOrder((prev)=>(prev.filter((element)=>(element._id!=id))))
             
         
 
@@ -122,7 +131,7 @@ function PendingOrderPanel() {
         <div className="admin-panel">
             <div>
             <h2>QR Code Scanner</h2>
-        {(!statusModal && !modalIsOpen) && <QrScanner onScanSuccess={handleScanSuccess}/>}</div>
+        {(!statusModal && !modalIsOpen && order.length>1) && <QrScanner key={qrKey} onScanSuccess={handleScanSuccess}/>}</div>
             <div className="order-section">
                 
                 
@@ -170,7 +179,7 @@ function PendingOrderPanel() {
                                     <td className="action-cell">
                                         <button 
                                             className="action-btn view-btn" 
-                                            onClick={()=>{showFullOrder(order._id,order.status);editStatus(order._id,order.status)}}>
+                                            onClick={()=>{handleScanSuccess(order._id)}}>
                                             View Details
                                         </button>
                                         {/* <button 
@@ -186,7 +195,7 @@ function PendingOrderPanel() {
                 </div>
             </div>
         </div>
-        {modalIsOpen && showing ?(<OrderModal {...orderModalProps}/>):null}
+        {(modalIsOpen && showing) ?(<OrderModal {...orderModalProps}/>):null}
         {/* {statusModal?<EditStatusModal {...statusModalProps}/>:null} */}
         </>
     );
