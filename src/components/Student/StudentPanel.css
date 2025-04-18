@@ -41,6 +41,198 @@
     font-weight: 500;
 }
 
+/* Order History Table Styles */
+.orderTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    margin: 16px 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.orderTable thead {
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+}
+
+.orderTable th {
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 16px;
+    text-align: left;
+}
+
+.orderTable td {
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #4a5568;
+}
+
+.orderTable tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.orderTable tbody tr:hover {
+    background: #f7fafc;
+}
+
+/* Activity Button Styles */
+.orderBtn {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-weight: 500;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    background: #4299e1;
+    color: white;
+}
+
+.orderBtn:hover {
+    background: #3182ce;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.orderBtn:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* Activity Modal Styles */
+.activity-modal {
+    padding: 32px;
+    max-width: 800px;
+    width: 90%;
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.activity-modal h2 {
+    color: #2d3748;
+    font-size: 1.75rem;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    padding-bottom: 16px;
+}
+
+.activity-modal h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(to right, #4299e1, transparent);
+}
+
+.activity-modal h2::before {
+    content: '📋';
+    font-size: 1.8rem;
+}
+
+.activity-content {
+    margin-top: 24px;
+}
+
+.activity-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.student-details {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding: 20px;
+    background: #f7fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.student-details:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.student-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 3px solid #e2e8f0;
+    transition: border-color 0.2s;
+}
+
+.student-details:hover .student-avatar {
+    border-color: #4299e1;
+}
+
+.student-info h3 {
+    margin: 0;
+    color: #2d3748;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.student-info p {
+    margin: 6px 0 0;
+    color: #718096;
+    font-size: 0.95rem;
+}
+
+/* Loading and Empty States */
+.loading-state,
+.empty-state {
+    text-align: center;
+    padding: 48px 24px;
+    color: #718096;
+}
+
+.loading-state svg {
+    animation: spin 1s linear infinite;
+    color: #4299e1;
+    width: 32px;
+    height: 32px;
+    margin-bottom: 16px;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* Loading and Error States */
+.loading-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 32px;
+    color: #4299e1;
+}
+
+.error-message {
+    padding: 16px;
+    background: #fff5f5;
+    color: #c53030;
+    border-radius: 8px;
+    margin: 16px 0;
+    font-size: 0.9rem;
+}
+
 .filter-section {
     background: #f8fafc;
     padding: 20px;
@@ -237,4 +429,45 @@
 .empty-state-content p {
     margin: 0;
     font-size: 1rem;
+}
+
+/* Modal styles for activity modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 32px 24px 24px 24px;
+  min-width: 350px;
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.18);
+  position: relative;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 18px;
+  background: none;
+  border: none;
+  font-size: 2rem;
+  color: #888;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.close-btn:hover {
+  color: #e53e3e;
 }

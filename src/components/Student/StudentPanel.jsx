@@ -1,11 +1,55 @@
 import { useEffect, useState } from "react";
 import "./StudentPanel.css"
 import { IKImage } from 'imagekitio-react';
+import OrderHistoryTable from "../Orders/OrderHistoryTable";
+import FullOrderModal from "../modals/FullOrderModal";
 function StudentPanel(){
     
     const [students,setStudents]=useState([]);
     const [filteredStudents,setFilteredStudents]=useState([])
 
+    // For viewing student activity
+    const [activityModalOpen, setActivityModalOpen] = useState(false);
+    const [activityStudent, setActivityStudent] = useState(null); // student object
+    const [activityOrders, setActivityOrders] = useState({pending: [], completed: []});
+    const [activityLoading, setActivityLoading] = useState(false);
+    const [activityError, setActivityError] = useState("");
+    // For showing full order
+    const [fullOrderModal, setFullOrderModal] = useState(false);
+    const [fullOrder, setFullOrder] = useState(null);
+
+    const handleViewActivity = async (student) => {
+        setActivityStudent(student);
+        setActivityLoading(true);
+        setActivityError("");
+        setActivityOrders({pending: [], completed: []});
+        setActivityModalOpen(true);
+        try {
+            const res = await fetch(`/api/order/orders/${student._id}`);
+            const data = await res.json();
+            setActivityOrders({
+                pending: data.pendingOrders || [],
+                completed: data.completedOrders || []
+            });
+        } catch (err) {
+            setActivityError("Failed to fetch orders.");
+        } finally {
+            setActivityLoading(false);
+        }
+    }
+
+    // Handler for 'Show' button in order table
+    const handleShowOrder = (orderId, status) => {
+        // Search both pending and completed arrays
+        let order = null;
+        if (status === "Pending") {
+            order = activityOrders.pending.find(o => o._id === orderId);
+        } else {
+            order = activityOrders.completed.find(o => o._id === orderId);
+        }
+        setFullOrder(order);
+        setFullOrderModal(true);
+    }
 
     useEffect(()=>{
         fetch("/api/student/all").
@@ -128,6 +172,7 @@ function StudentPanel(){
                                     <th>Student</th>
                                     <th>Department</th>
                                     <th>Semester</th>
+                                    <th>Activity</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -161,12 +206,51 @@ function StudentPanel(){
                                             </td>
                                             <td className="department">{student.department}</td>
                                             <td className="semester">Semester {student.semester}</td>
+                                            <td>
+                                                <button className="orderBtn" onClick={() => handleViewActivity(student)}>View Activity</button>
+                                            </td>
                                         </tr>
                                     ))
                                 )}
                             </tbody>
                         </table>
                     </div>
+        {/* Activity Modal */}
+        {activityModalOpen && (
+            <div className="modal-overlay" onClick={() => setActivityModalOpen(false)}>
+                <div className="modal-content" onClick={e => e.stopPropagation()}>
+                    <button className="close-btn" onClick={() => setActivityModalOpen(false)}>×</button>
+                    <h2>Order Activity: {activityStudent?.name}</h2>
+                    {activityLoading ? (
+                        <div>Loading...</div>
+                    ) : activityError ? (
+                        <div style={{ color: 'red' }}>{activityError}</div>
+                    ) : (
+                        <>
+                            <OrderHistoryTable
+                                orders={activityOrders.pending}
+                                onShow={handleShowOrder}
+                                title="Pending Orders"
+                            />
+                            <OrderHistoryTable
+                                orders={activityOrders.completed}
+                                onShow={handleShowOrder}
+                                title="Completed Orders"
+                            />
+                        </>
+                    )}
+                </div>
+            </div>
+        )}
+        {/* Full Order Modal for admin activity view */}
+        {fullOrderModal && (
+            <FullOrderModal
+                fullOrderModal={fullOrderModal}
+                setFullOrderModal={setFullOrderModal}
+                fullOrder={fullOrder}
+                setFullOrder={setFullOrder}
+            />
+        )}
         </div>
       );
     }
