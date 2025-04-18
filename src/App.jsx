@@ -36,9 +36,8 @@ function App() {
             <Route path="pending" element={isLoggedIn ? <PendingOrderPanel /> : <Navigate to="/" />} />
             <Route path="inventory" element={isLoggedIn ? <InventoryPanel /> : <Navigate to="/" />} />
             <Route path="students" element={isLoggedIn ? <StudentPanel /> : <Navigate to="/" />} />
-            
-            <Route path="/" element={<LoginModal />} />
-            <Route path="/*" element={<LoginModal />} />
+            <Route path="/" element={isLoggedIn ? <PendingOrderPanel /> : <LoginModal />} />
+            <Route path="/*" element={isLoggedIn ? <PendingOrderPanel /> : <LoginModal />} />
           </Routes>
         </div>
         {isLoggedIn && <Footer />}
