@@ -10,7 +10,7 @@ import { createContext } from 'react'
 import LoginModal from './components/modals/loginmodal'
 import StudentPanel from './components/Student/StudentPanel'
 //import RemoveModal from './components/modals/removeModal'
-
+import PrintJobsPanel from './components/PrintJobsPanel'
 export const myContext=createContext();
 
 function App() {
@@ -36,6 +36,7 @@ function App() {
             <Route path="pending" element={isLoggedIn ? <PendingOrderPanel /> : <Navigate to="/" />} />
             <Route path="inventory" element={isLoggedIn ? <InventoryPanel /> : <Navigate to="/" />} />
             <Route path="students" element={isLoggedIn ? <StudentPanel /> : <Navigate to="/" />} />
+            <Route path="print" element={isLoggedIn ? <PrintJobsPanel /> : <Navigate to="/" />} />
             
             <Route path="/" element={<LoginModal />} />
             <Route path="/*" element={<LoginModal />} />
