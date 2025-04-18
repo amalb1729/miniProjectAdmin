@@ -274,10 +274,9 @@ function InventoryPanel() {
                     type="text" 
                     value={query} 
                     onChange={(e)=>setQuery(e.target.value)} 
-                    placeholder="Search items..."
+                    placeholder="    Search items..."
                     className="search-input"
                 />
-                <i className="search-icon">🔍</i>
                 </div>
                 {/* {!filterItems ? null : (
                 <div className="search-results">

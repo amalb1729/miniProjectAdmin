@@ -233,6 +233,200 @@
     font-size: 0.9rem;
 }
 
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .student-page {
+        width: 95%;
+        padding: 20px;
+        margin: 15px auto;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+
+    .filter-section {
+        padding: 15px;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .filter-group {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .search-box {
+        width: 100%;
+        min-width: unset;
+    }
+
+    .table-container {
+        overflow-x: auto;
+        width: 100%;
+        max-width: 100%;
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .student-table th,
+    .student-table td {
+        padding: 12px 8px;
+        font-size: 0.9rem;
+    }
+
+    .student-info {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+
+    .student-avatar {
+        width: 32px;
+        height: 32px;
+    }
+
+    .student-name {
+        font-size: 0.9rem;
+    }
+
+    .orderBtn {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+    }
+}
+
+/* Inventory and Orders Section Styles */
+.inventory-section,
+.orders-section {
+    padding: 20px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 24px;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: #2d3748;
+    font-weight: 600;
+}
+
+.order-count {
+    background: #ebf8ff;
+    color: #2b6cb0;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+@media screen and (max-width: 768px) {
+    .inventory-section,
+    .orders-section {
+        padding: 16px;
+        margin-bottom: 20px;
+    }
+
+    .section-title {
+        font-size: 1.3rem;
+    }
+
+    .order-count {
+        font-size: 0.85rem;
+        padding: 4px 10px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .student-page {
+        width: 100%;
+        padding: 10px;
+        margin: 0;
+        border-radius: 0;
+        box-sizing: border-box;
+        overflow-x: hidden;
+    }
+
+    /* Reset any potential horizontal scroll */
+    body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+    .inventory-section,
+    .orders-section {
+        padding: 12px;
+        margin-bottom: 16px;
+        border-radius: 8px;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+        margin-bottom: 16px;
+    }
+
+    .section-title {
+        font-size: 1.2rem;
+    }
+
+    .student-count {
+        font-size: 0.8rem;
+        padding: 4px 8px;
+    }
+
+    .filter-title {
+        font-size: 1rem;
+    }
+
+    .student-table th {
+        white-space: nowrap;
+        font-size: 0.8rem;
+    }
+
+    .student-table td {
+        font-size: 0.85rem;
+    }
+
+    /* Activity Modal Responsive */
+    .activity-modal {
+        padding: 20px;
+        width: 95%;
+    }
+
+    .activity-modal h2 {
+        font-size: 1.3rem;
+        margin-bottom: 20px;
+    }
+
+    .student-details {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+
+    .orderTable th,
+    .orderTable td {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+}
+
 .filter-section {
     background: #f8fafc;
     padding: 20px;

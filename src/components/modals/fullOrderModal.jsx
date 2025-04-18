@@ -17,7 +17,7 @@ function FullOrderModal({ fullOrderModal, setFullOrderModal, fullOrder, setFullO
             <Modal isOpen={fullOrderModal} closeModal={() => { setFullOrderModal(false); setFullOrder(null); }}>
                 <div className="full-order-modal">
                     <h2 className="order-title">
-                        Order Details
+                        Order Details 
                         <span className="order-status" data-status={fullOrder?.status?.toLowerCase()}>
                             {fullOrder?.status || "Unknown"}
                         </span>

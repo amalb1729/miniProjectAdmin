@@ -1,0 +1,144 @@
+.order-history-table {
+    margin: 24px 0;
+}
+
+.order-history-table h3 {
+    color: #2d3748;
+    font-size: 1.3rem;
+    margin-bottom: 16px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+    max-width: 100vw;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.orderTable {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.orderTable thead {
+    background: linear-gradient(135deg, #4299e1, #3182ce);
+}
+
+.orderTable th {
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+    padding: 16px;
+    text-align: left;
+    white-space: nowrap;
+}
+
+.orderTable td {
+    padding: 16px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #4a5568;
+}
+
+.item-names {
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.status-badge.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-badge.completed {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.status-badge.cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.amount {
+    font-weight: 500;
+    color: #2d3748;
+}
+
+.empty-state {
+    text-align: center;
+    color: #718096;
+    padding: 32px !important;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+    .order-history-table h3 {
+        font-size: 1.2rem;
+    }
+
+    .orderTable th,
+    .orderTable td {
+        padding: 12px;
+        font-size: 0.9rem;
+    }
+
+    .item-names {
+        max-width: 200px;
+    }
+
+    .status-badge {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .order-history-table {
+        margin: 16px 0;
+    }
+
+    .order-history-table h3 {
+        font-size: 1.1rem;
+        margin-bottom: 12px;
+    }
+
+    .orderTable th,
+    .orderTable td {
+        padding: 10px 8px;
+        font-size: 0.85rem;
+    }
+
+    .item-names {
+        max-width: 150px;
+    }
+
+    .status-badge {
+        padding: 3px 6px;
+        font-size: 0.75rem;
+    }
+
+    .orderBtn {
+        padding: 4px 8px;
+        font-size: 0.8rem;
+    }
+}

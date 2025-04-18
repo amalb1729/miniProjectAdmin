@@ -235,7 +235,7 @@ function StudentPanel(){
                             <OrderHistoryTable
                                 orders={activityOrders.completed}
                                 onShow={handleShowOrder}
-                                title="Completed Orders"
+                                title="Completed/Cancelled Orders"
                             />
                         </>
                     )}

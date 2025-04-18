@@ -1,4 +1,4 @@
-import Modal from "./modal";
+import Modal from "./Modal";
 import "./orderModal.css";
 import "./editStatusModal.css"
 import { useState,useEffect} from "react";
@@ -27,7 +27,7 @@ function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder,statusModa
                                 <th>Item Name</th>
                                 <th>Price</th>
                                 <th>Quantity</th>
-                                <th>Total</th>
+                                <th>Sub Total</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -39,7 +39,7 @@ function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder,statusModa
                                         <td className="item-name">{order.itemName}</td>
                                         <td className="item-price">₹{order.itemPrice || "N/A"}</td>
                                         <td className="item-quantity">{order.itemQuantity}</td>
-                                        <td>{order.itemPrice*order.itemQuantity}</td>
+                                        <td>₹{order.itemPrice*order.itemQuantity}</td>
                                     </tr>
                                 )
                             else
@@ -54,7 +54,7 @@ function OrderModal({modalIsOpen,setModelIsOpen,showing,hideFullOrder,statusModa
                             }
                         )}
                         <tr><td colSpan="3">Grand Total</td>
-                        <td>{total}</td></tr>
+                        <td>₹{total}</td></tr>
                         </tbody>
                     </table>
                 </div>

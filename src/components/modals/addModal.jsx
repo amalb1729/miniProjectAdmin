@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import Modal from "./modal.jsx";
+import Modal from "./Modal";
 import { IKContext, IKUpload } from 'imagekitio-react';
 import "./addModal.css";
 

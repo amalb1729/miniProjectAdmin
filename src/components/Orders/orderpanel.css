@@ -6,6 +6,32 @@
     background-color: #ffffff;
     border-radius: 16px;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    box-sizing: border-box;
+}
+
+@media screen and (max-width: 480px) {
+    .admin-panel {
+        width: 100%;
+        margin: 0;
+        padding: 15px;
+        border-radius: 0;
+    }
+
+    /* Reset any potential horizontal scroll */
+    body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+
+    /* Ensure table container doesn't overflow */
+    .table-container {
+        width: 100%;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        margin: 0;
+        padding: 0;
+    }
 }
 
 .admin-panel h2 {
@@ -23,6 +49,32 @@
     border-collapse: collapse;
     margin-top: 10px;
     background: white;
+    min-width: 600px; /* Ensure table maintains minimum width for scrolling */
+}
+
+.admin-panel td,
+.admin-panel th {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+@media screen and (max-width: 480px) {
+    .admin-panel td,
+    .admin-panel th {
+        padding: 10px 8px;
+        font-size: 0.9rem;
+    }
+
+    .admin-panel h2 {
+        font-size: 1.3rem;
+        margin-bottom: 15px;
+    }
+
+    .admin-panel h3 {
+        font-size: 1.1rem;
+        margin-top: 15px;
+    }
 }
 
 .admin-panel table, th, td {

@@ -14,13 +14,19 @@
 
 /* Base modal container */
 .modalContainer {
-    background-color: white;
-    padding: 20px;
-    border-radius: 8px;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 6px 32px rgba(0,0,0,0.2);
     position: relative;
-    min-width: 300px;
-    max-width: 90%;
+    min-width: 320px;
+    max-width: 95vw;
+    min-height: 100px;
     max-height: 90vh;
+    overflow-y: auto;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
 }
 
 /* Special handling for order modal content - similar to full-order-modal */
