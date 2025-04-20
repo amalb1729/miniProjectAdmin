@@ -1,0 +1,207 @@
+.announcements-panel {
+  padding: 20px;
+  max-width: 95%;
+  margin: 0 auto;
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.panel-header h1 {
+  margin: 0;
+  color: #333;
+}
+
+.add-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.add-btn:hover {
+  background-color: #45a049;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #d32f2f;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+.loading, .no-announcements {
+  text-align: center;
+  padding: 20px;
+  color: #666;
+}
+
+.announcements-list {
+  overflow-x: auto;
+}
+
+.announcements-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  margin: 16px 0;
+  background: white;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.announcements-table thead {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+}
+
+.announcements-table th {
+  color: white;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+  padding: 16px;
+  text-align: left;
+  border-bottom: none;
+}
+
+.actions-column {
+  background: linear-gradient(135deg, #4299e1, #3182ce);
+  color: white;
+  text-align: center;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+}
+
+.text-column { width: 28%; }
+.status-column { width: 12%; }
+.priority-column { width: 10%; }
+.date-column { width: 15%; }
+.actions-column { width: 25%; }
+
+.announcements-table td {
+  padding: 16px;
+  border-bottom: 1px solid #e2e8f0;
+  color: #4a5568;
+  vertical-align: middle;
+}
+
+.announcements-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.announcements-table tbody tr:hover {
+  background: #f7fafc;
+  transition: background-color 0.2s;
+}
+
+.active-row {
+  background-color: #ffffff;
+  color: #333;
+}
+
+.active-row:nth-child(even) {
+  background-color: #f8f9fa;
+}
+
+.inactive-row {
+  background-color: #f5f5f5;
+  color: #757575;
+}
+
+.inactive-row:nth-child(even) {
+  background-color: #eeeeee;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  min-width: 50px;
+  text-align: center;
+}
+
+.status-badge.active {
+  background-color: #4caf50;
+  color: white;
+  box-shadow: 0 2px 4px rgba(76, 175, 80, 0.2);
+}
+
+.status-badge.inactive {
+  background-color: #9e9e9e;
+  color: white;
+  box-shadow: 0 2px 4px rgba(158, 158, 158, 0.2);
+}
+
+.actions-cell {
+  background-color: #f5f5f5;
+  padding: 10px 20px;
+  border-left: 2px solid #e0e0e0;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+
+.action-btn {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+  min-width: 70px;
+  text-align: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+}
+
+.action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-btn {
+  background-color: #4299e1;
+  color: white;
+}
+
+.toggle-btn:hover {
+  background-color: #3182ce;
+}
+
+.edit-btn {
+  background-color: #4299e1;
+  color: white;
+}
+
+.edit-btn:hover {
+  background-color: #3182ce;
+}
+
+.delete-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+}

@@ -9,6 +9,7 @@ import { BrowserRouter as Router, Routes, Route,Navigate  } from "react-router-d
 import { createContext } from 'react'
 import LoginModal from './components/modals/loginmodal'
 import StudentPanel from './components/Student/StudentPanel'
+import AnnouncementsPanel from './components/Announcements/AnnouncementsPanel'
 //import RemoveModal from './components/modals/removeModal'
 
 export const myContext=createContext();
@@ -55,6 +56,7 @@ function App() {
             <Route path="pending" element={isLoggedIn ? <PendingOrderPanel /> : <Navigate to="/" />} />
             <Route path="inventory" element={isLoggedIn ? <InventoryPanel /> : <Navigate to="/" />} />
             <Route path="students" element={isLoggedIn ? <StudentPanel /> : <Navigate to="/" />} />
+            <Route path="announcements" element={isLoggedIn ? <AnnouncementsPanel /> : <Navigate to="/" />} />
             <Route path="/" element={isLoggedIn ? <PendingOrderPanel /> : <LoginModal />} />
             <Route path="/*" element={isLoggedIn ? <PendingOrderPanel /> : <LoginModal />} />
           </Routes>
