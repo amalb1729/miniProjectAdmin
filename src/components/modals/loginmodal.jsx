@@ -32,16 +32,17 @@ function LoginModal() {
         }
     
         try {
-            const response = await fetch("/api/auth/login", {
+            // Use the admin-specific login endpoint
+            const response = await fetch("/api/auth/admin/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, password }),
+                credentials: 'include' // Include cookies for refresh token
             });
     
             const data = await response.json();
-            console.log(data)
-    
-            if (response.ok && data.user.role=="admin") {
+            
+            if (response.ok) {
                 setMessage("✅ Login Successful!");
                 sessionStorage.setItem('isAdminLoggedIn', 'true');
                 // Ensure accessToken is always a string
@@ -53,16 +54,7 @@ function LoginModal() {
                     setMessage(null);
                     navigate("/inventory");
                 }, 2000);
-            }
-
-            else if(response.ok){
-                setMessage("❌ " + "Admin privileges not found");
-                userRef.current.value = "";
-                passRef.current.value = "";
-
-            } 
-            
-            else {
+            } else {
                 setMessage("❌ " + data.message);
                 userRef.current.value = "";
                 passRef.current.value = "";
