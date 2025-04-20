@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import Modal from "./Modal";
 import { IKContext, IKUpload } from 'imagekitio-react';
+import { myContext } from '../../App';
 import "./addModal.css";
 
 function AddModal({addingItem, setAddingItem, setNewItem}) {
@@ -8,6 +9,7 @@ function AddModal({addingItem, setAddingItem, setNewItem}) {
     const [uploadError, setUploadError] = useState("")
     const [isUploading, setIsUploading] = useState(false)
     const [errors, setErrors] = useState({name: "", price: "", stock: ""})
+    const { accessToken, refreshRequest } = useContext(myContext);
 
     //destructing twice so that leading zeroes will be gone
     const setItemPrice=(e)=>{
@@ -53,9 +55,20 @@ function AddModal({addingItem, setAddingItem, setNewItem}) {
         return isValid
     }
 
-    const authenticator = async () => {
+    const authenticator = async (token = accessToken) => {
         try {
-            const response = await fetch('/api/item/uploadCheck');
+            if (!token) {
+                token = await refreshRequest();
+            }
+            let response = await fetch('/api/item/uploadCheck', {
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+            if (response.status === 401) {
+                token = await refreshRequest();
+                response = await fetch('/api/item/uploadCheck', {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+            }
             if (!response.ok) {
                 throw new Error(`Request failed with status ${response.status}`);
             }

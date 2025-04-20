@@ -1,129 +1,164 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { myContext } from "../../App";
 import "./orderPanel.css"
 import OrderModal from "../modals/orderModal";
 import EditStatusModal from "../modals/editStatusModal";
 import QrScanner from "./QRscanner";
 function PendingOrderPanel() {
 
-    const [order,setOrder]=useState([]);
-    const [pendingOrders,setPendingOrders]=useState([])
-    const [statusModal,setStatusModal]=useState(false)
-    const [newStatus,setNewStatus]=useState({}) // for storing id and stastus of order for changing status
+    const { accessToken, refreshRequest } = useContext(myContext);
+    const [order, setOrder] = useState([]);
+    const [pendingOrders, setPendingOrders] = useState([])
+    const [statusModal, setStatusModal] = useState(false)
+    const [newStatus, setNewStatus] = useState({}) // for storing id and stastus of order for changing status
 
-    const [showing,setShowing]= useState(null) // currently showing order object in modal
-    const [currentlyShowingId,setCurrentlyShowingId]=useState(null)
-    const [modalIsOpen,setModelIsOpen]=useState(false);
+    const [showing, setShowing] = useState(null) // currently showing order object in modal
+    const [currentlyShowingId, setCurrentlyShowingId] = useState(null)
+    const [modalIsOpen, setModelIsOpen] = useState(false);
 
-    const [filterSearch,setFilterSearch]=useState({department:"",semester:""})
-    const [result,setResult]=useState("")
-    const [qrKey,setQrKey]=useState(Date.now())
+    const [filterSearch, setFilterSearch] = useState({ department: "", semester: "" })
+    const [result, setResult] = useState("")
+    const [qrKey, setQrKey] = useState(Date.now())
 
     const handleScanSuccess = (id) => {
-        showFullOrder(id,"Pending");
-        editStatus(id,"Pending");
-        console.log(id,"Pending","from scan")
+        showFullOrder(id, "Pending");
+        editStatus(id, "Pending");
+        console.log(id, "Pending", "from scan")
 
         // showFullOrder(order._id,order.status);
         // editStatus(order._id,order.status)
     };
 
-    const setDepartment=(value)=>{
+    const setDepartment = (value) => {
         console.log(value)
-        setFilterSearch((prev)=>({...prev,"department":value,"hi":"hello"}))
+        setFilterSearch((prev) => ({ ...prev, "department": value, "hi": "hello" }))
     }
-    const setSemester=(value)=>{
-        setFilterSearch((prev)=>({...prev,"semester":value}))
+    const setSemester = (value) => {
+        setFilterSearch((prev) => ({ ...prev, "semester": value }))
 
     }
 
-    useEffect(()=>{
-        if(filterSearch.department=="" && filterSearch.semester==""){
-                setPendingOrders([...order])
+    useEffect(() => {
+        if (filterSearch.department == "" && filterSearch.semester == "") {
+            setPendingOrders([...order])
         }
-        else if(filterSearch.department=="" )
-                setPendingOrders([...order.filter((element)=>(element.userId.semester==filterSearch.semester))])
-        else if(filterSearch.semester=="")
-                setPendingOrders([...order.filter((element)=>(element.userId.department==filterSearch.department))])
-        else    
-             setPendingOrders([...order.filter((element)=>(element.userId.department==filterSearch.department && element.userId.semester==filterSearch.semester))]) 
+        else if (filterSearch.department == "")
+            setPendingOrders([...order.filter((element) => (element.userId.semester == filterSearch.semester))])
+        else if (filterSearch.semester == "")
+            setPendingOrders([...order.filter((element) => (element.userId.department == filterSearch.department))])
+        else
+            setPendingOrders([...order.filter((element) => (element.userId.department == filterSearch.department && element.userId.semester == filterSearch.semester))])
 
         console.log(filterSearch)
-    },[filterSearch])
+    }, [filterSearch])
 
-    
     // Fetch orders and items when admin logs in
-    useEffect( () => {
-        fetch("/api/order/pendingOrders")
-            .then(res => res.json())
-            .then((data) => {
-                            console.log(data)
-                            setOrder(data)
-                            setPendingOrders(data);
-            })
-            .catch(err=>console.log(err));
-        
+    useEffect(() => {
+        const fetchPendingOrders = async () => {
+            try {
+                let token = accessToken;
+                if (!token) {
+                    token = await refreshRequest();
+                }
+
+                let response = await fetch("/api/order/pendingOrders", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (response.status === 401) {
+                    token = await refreshRequest();
+                    response = await fetch("/api/order/pendingOrders", {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
+                }
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setOrder(data);
+                    setPendingOrders(data);
+                }
+            } catch (error) {
+                console.error("Error fetching pending orders:", error);
+            }
+        };
+
+        fetchPendingOrders();
     }, []);
 
-
-    // useEffect(()=>{
-    //     if(showing){
-    //         setModelIsOpen(true)
-    //     }
-
-    // },[showing])
-    useEffect(()=>{
+    useEffect(() => {
         setQrKey(Date.now())
-    },[pendingOrders])
+    }, [pendingOrders])
 
-    const showFullOrder=(id,status)=>{
-            setShowing(order.find((element)=>(element._id==id)))  
-            console.log("pending order:",order)
-            console.log("setshowing inside value",order.find((element)=>{console.log(element._id,id,"inside find");return element._id==id}))
-            setModelIsOpen(true)
-            setCurrentlyShowingId(id)   
-            console.log("called showfullorder")
-        }
+    const showFullOrder = (id, status) => {
+        setShowing(order.find((element) => (element._id == id)))
+        console.log("pending order:", order)
+        console.log("setshowing inside value", order.find((element) => { console.log(element._id, id, "inside find"); return element._id == id }))
+        setModelIsOpen(true)
+        setCurrentlyShowingId(id)
+        console.log("called showfullorder")
+    }
 
-    const hideFullOrder=()=>{
-            setShowing(null)  
-            setCurrentlyShowingId(null)   
-            }
+    const hideFullOrder = () => {
+        setShowing(null)
+        setCurrentlyShowingId(null)
+    }
 
-    
-    const editStatus= (id,status)=>{
-        setNewStatus((prev)=>({...prev,["id"]:id,["status"]:status}))
+    const editStatus = (id, status) => {
+        setNewStatus((prev) => ({ ...prev, ["id"]: id, ["status"]: status }))
         setStatusModal(true)
         console.log("called editstatus")
     }
 
-    const changeStatusFn= async(id,status,prevStatus)=>{
-        try{
+    const changeStatusFn = async (id, status) => {
+        try {
+            let token = accessToken;
+            if (!token) {
+                token = await refreshRequest();
+            }
 
-            const response = await fetch("/api/order/orders/change", {
+            let response = await fetch("/api/order/orders/change", {
                 method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id,status }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify({ id, status }),
             });
-    
+
+            if (response.status === 401) {
+                token = await refreshRequest();
+                response = await fetch("/api/order/orders/change", {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ id, status }),
+                });
+            }
+
             const data = await response.json();
-            console.log(data)
+            console.log(data);
 
-            if(status=="Pending")
-                setOrder((prev)=>(prev.map((element)=>(element._id!=id?(element):{...element,status}))))
-            else
-                setOrder((prev)=>(prev.filter((element)=>(element._id!=id))))
-            
-        
+            if (status !== "Pending") {
+                setOrder(prev => prev.filter(element => element._id !== id));
+                setPendingOrders(prev => prev.filter(element => element._id !== id));
+            } else {
+                setOrder(prev => prev.map(element =>
+                    element._id !== id ? element : { ...element, status }
+                ));
+                setPendingOrders(prev => prev.map(element =>
+                    element._id !== id ? element : { ...element, status }
+                ));
+            }
 
-        }catch(error){
-            console.log(error)
+        } catch (error) {
+            console.log(error);
         }
-        setNewStatus({})
-    }
+        setNewStatus({});
+    };
 
-    
-
-    const orderModalProps={modalIsOpen,setModelIsOpen,showing,hideFullOrder,statusModal,setStatusModal,newStatus,setNewStatus,changeStatusFn}
+    const orderModalProps = { modalIsOpen, setModelIsOpen, showing, hideFullOrder, statusModal, setStatusModal, newStatus, setNewStatus, changeStatusFn }
     // const statusModalProps={statusModal,setStatusModal,newStatus,setNewStatus,changeStatusFn}
 
     return (

@@ -9,10 +9,27 @@ function Header() {
     const {isLoggedIn,setLoggedIn,setLoginOpen}=useContext(myContext)
     const navigate=useNavigate();    
 
-    const handleLogout = () => {
-        sessionStorage.removeItem('isAdminLoggedIn');
-        setLoggedIn(false);
-        setLoginOpen(true);
+    const handleLogout = async () => {
+        try {
+            // Call the server's logout endpoint to clear the HTTP-only refreshToken cookie
+            const response = await fetch('/api/auth/logout', {
+                method: 'POST',
+                credentials: 'include' // Important for cookies
+            });
+            
+            if (response.ok) {
+                // Clear local storage/session storage
+                sessionStorage.removeItem('isAdminLoggedIn');
+                // Update state
+                setLoggedIn(false);
+                setLoginOpen(true);
+                console.log('Logged out successfully');
+            } else {
+                console.error('Logout failed');
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+        }
     };
 
     return (

@@ -23,11 +23,30 @@ function App() {
     return loginState;
   });
   
+  const [accessToken,setAccessToken] =useState("");
+
+  const refreshRequest = async () => {
+    const res = await fetch("/api/auth/token", {
+        method: "POST",
+        credentials: "include",
+    });
+
+    if (!res.ok) {
+        throw new Error("Session expired");
+    }
+
+    const data = await res.json();
+    // Ensure accessToken is always a string
+    const tokenString = typeof data.accessToken === 'string' ? data.accessToken : String(data.accessToken);
+    setAccessToken(tokenString);
+    return tokenString;
+  };
+
   const loginProp={ isLoginOpen, setLoginOpen,isLoggedIn,setLoggedIn}
 
   return (
     <div className="app">
-      <myContext.Provider value={{ isLoginOpen, setLoginOpen, isLoggedIn, setLoggedIn }}>
+      <myContext.Provider value={{ isLoginOpen, setLoginOpen, isLoggedIn, setLoggedIn,accessToken,setAccessToken,refreshRequest }}>
         {isLoggedIn && <Header />}
         <div className="content">
           <Routes>

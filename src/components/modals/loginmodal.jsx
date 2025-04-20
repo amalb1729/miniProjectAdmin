@@ -1,11 +1,11 @@
 import { useContext, useRef, useState } from "react";
-import Modal from "./modal";
+import Modal from "./Modal";
 import { myContext } from "../../App";
 import "./log.css";
 import { useNavigate } from "react-router-dom";
 
 function LoginModal() {
-    const { isLoginOpen, setLoginOpen,isLoggedIn,setLoggedIn} = useContext(myContext);
+    const { isLoginOpen, setLoginOpen,isLoggedIn,setLoggedIn,setAccessToken} = useContext(myContext);
     const userRef = useRef(null);
     const passRef = useRef(null);
     const [message, setMessage] = useState("");
@@ -44,7 +44,9 @@ function LoginModal() {
             if (response.ok && data.user.role=="admin") {
                 setMessage("✅ Login Successful!");
                 sessionStorage.setItem('isAdminLoggedIn', 'true');
-                
+                // Ensure accessToken is always a string
+                const tokenString = typeof data.accessToken === 'string' ? data.accessToken : String(data.accessToken);
+                setAccessToken(tokenString);
                 setTimeout(() => {
                     setLoggedIn(true);
                     setLoginOpen(false);

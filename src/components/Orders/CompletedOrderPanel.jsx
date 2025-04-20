@@ -1,9 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { myContext } from "../../App";
 import "./orderPanel.css"
 import OrderModal from "../modals/orderModal";
 import EditStatusModal from "../modals/editStatusModal";
 
 function CompletedOrderPanel() {
+    const { accessToken, refreshRequest } = useContext(myContext);
     const [order,setOrder]=useState([]);
     const [pendingOrders,setPendingOrders]=useState([])
     const [completedOrders,setCompletedOrders]=useState([])
@@ -55,17 +57,37 @@ function CompletedOrderPanel() {
 
     
     // Fetch orders and items when admin logs in
-    useEffect( () => {
-        fetch("/api/order/completedOrders")
-            .then(res => res.json())
-            .then((data) => {
-                            setOrder(data)
-                            setCompletedOrders(data);
-            })
-            .catch(err=>console.log(err));
+    useEffect(() => {
+        const fetchCompletedOrders = async () => {
+            try {
+                let token = accessToken;
+                if (!token) {
+                    token = await refreshRequest();
+                }
+                
+                let response = await fetch("/api/order/completedOrders", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                
+                if (response.status === 401) {                                       
+                    token = await refreshRequest();
+                    response = await fetch("/api/order/completedOrders", {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });                   // Fetch orders and items when admin logs in
+                }
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    setOrder(data)
+                    setCompletedOrders(data);
+                }
+            } catch (error) {
+                console.error("Error fetching completed orders:", error);
+            }
+        };
         
+        fetchCompletedOrders();
     }, []);
-
 
     useEffect(()=>{
         if(showing){

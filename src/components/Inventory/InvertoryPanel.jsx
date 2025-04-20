@@ -1,12 +1,12 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
 import "./inventoryPanel.css"
 import RemoveModal from "../modals/removeModal.jsx";
 import AddModal from "../modals/addModal.jsx";
-//import { myContext } from "../../App";
-//import { useContext } from "react";
+import { myContext } from "../../App";
 import { IKImage } from 'imagekitio-react';
 import ImageUploader from "./imageUploader.jsx";
 function InventoryPanel() {
+    const { accessToken, refreshRequest } = useContext(myContext);
     const [items, setItems] = useState([]);// array of items where finalised changes are made
     const [sortedItems,setSortedItems]=useState([]);//used for sorting
     const [finalItems,setFinalItems]=useState([]);//used for displaying 
@@ -131,35 +131,69 @@ function InventoryPanel() {
 
 
     async function updateItemFn() {
-
         if(!updateItemId) return;
-        const response=await fetch("/api/item/update",{
-            method:"PUT",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(...sortedItems.filter(element=>element._id==updateItemId))
-        })
         
-        const data=await response.json()
-        console.log(data)
-        if(response.ok){
-            setMessage(data.message)
+        try {
+            let token = accessToken;
+            if(!token) {
+                token = await refreshRequest();
+            }
+            
+            let response = await fetch("/api/item/update", {
+                method: "PUT",
+                headers: { 
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+                body: JSON.stringify(...sortedItems.filter(element => element._id == updateItemId))
+            });
+            
+            if (response.status === 401) {                                       
+                token = await refreshRequest();
+                response = await fetch("/api/item/update", {
+                    method: "PUT",
+                    headers: { 
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`
+                    },
+                    body: JSON.stringify(...sortedItems.filter(element => element._id == updateItemId))
+                });                  
+            }
+            
+            const data = await response.json();
+            console.log(data);
+            if(response.ok) {
+                setMessage(data.message);
+            }
+        } catch (error) {
+            console.error("Error updating item:", error);
+        } finally {
+            setUpdateItemId(null);
+            setCurrentlyEdit(false);
+            
+            setTimeout(() => {
+                setMessage(null);
+            }, 2000);
         }
-
-        setUpdateItemId(null);
-        setCurrentlyEdit(false);
-
-        setTimeout(() => {
-        setMessage(null);
-        }, 2000);
     }
 
     async function removeItemFn() {
         if(!removeItemId) return;
-        const response=await fetch("/api/item/remove",{
+        let token = accessToken;
+        if (!token) token = await refreshRequest();
+        let response = await fetch("/api/item/remove",{
             method:"DELETE",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ itemId:removeItemId })
-        })
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+            body: JSON.stringify({id:removeItemId})
+        });
+        if (response.status === 401) {
+            token = await refreshRequest();
+            response = await fetch("/api/item/remove",{
+                method:"DELETE",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify({id:removeItemId})
+            });
+        }
         
         const data=await response.json()
         if(response.ok){
@@ -179,11 +213,21 @@ function InventoryPanel() {
         if(!newItem) return;
 
         try{
-        const response=await fetch("/api/item/add",{
-            method:"PUT",
-            headers: { "Content-Type": "application/json" },
+        let token = accessToken;
+        if (!token) token = await refreshRequest();
+        let response = await fetch("/api/item/add",{
+            method:"POST",
+            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
             body: JSON.stringify(newItem)
-        })
+        });
+        if (response.status === 401) {
+            token = await refreshRequest();
+            response = await fetch("/api/item/add",{
+                method:"POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                body: JSON.stringify(newItem)
+            });
+        }
         
         const data=await response.json()
         if(response.ok){

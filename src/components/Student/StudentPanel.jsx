@@ -1,10 +1,13 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useContext } from "react";
+import { myContext } from "../../App";
 import "./StudentPanel.css"
 import { IKImage } from 'imagekitio-react';
 import OrderHistoryTable from "../Orders/OrderHistoryTable";
 import FullOrderModal from "../modals/FullOrderModal";
+
 function StudentPanel(){
     
+    const { accessToken, refreshRequest } = useContext(myContext);
     const [students,setStudents]=useState([]);
     const [filteredStudents,setFilteredStudents]=useState([])
 
@@ -25,12 +28,29 @@ function StudentPanel(){
         setActivityOrders({pending: [], completed: []});
         setActivityModalOpen(true);
         try {
-            const res = await fetch(`/api/order/orders/${student._id}`);
-            const data = await res.json();
-            setActivityOrders({
-                pending: data.pendingOrders || [],
-                completed: data.completedOrders || []
+            let token = accessToken;
+            if (!token) {
+                token = await refreshRequest();
+            }
+            
+            let response = await fetch(`/api/order/orders/${student._id}`, {
+                headers: { "Authorization": `Bearer ${token}` }
             });
+            
+            if (response.status === 401) {                                       
+                token = await refreshRequest();
+                response = await fetch(`/api/order/orders/${student._id}`, {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });                  
+            }
+            
+            if (response.ok) {
+                const data = await response.json();
+                setActivityOrders({
+                    pending: data.pendingOrders || [],
+                    completed: data.completedOrders || []
+                });
+            }
         } catch (err) {
             setActivityError("Failed to fetch orders.");
         } finally {
@@ -52,13 +72,35 @@ function StudentPanel(){
     }
 
     useEffect(()=>{
-        fetch("/api/student/all").
-        then(res=>res.json()).
-        then(data=>{
-                console.log(data);
-                setFilteredStudents(data);
-                setStudents(data);
-        })
+        const fetchStudents = async () => {
+            try {
+                let token = accessToken;
+                if (!token) {
+                    token = await refreshRequest();
+                }
+                
+                let response = await fetch("/api/student/all", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+                
+                if (response.status === 401) {                                       
+                    token = await refreshRequest();
+                    response = await fetch("/api/student/all", {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });                  
+                }
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    setFilteredStudents(data);
+                    setStudents(data);
+                }
+            } catch (error) {
+                console.error("Error fetching students:", error);
+            }
+        };
+        
+        fetchStudents();
     },[])
 
     const [filterSearch,setFilterSearch]=useState({name:"",department:"",semester:""})
