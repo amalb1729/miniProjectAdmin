@@ -134,6 +134,17 @@ function InventoryPanel() {
         if(!updateItemId) return;
         
         try {
+            // Find the item to update
+            const itemToUpdate = sortedItems.find(element => element._id === updateItemId);
+            
+            if (!itemToUpdate) {
+                console.error("Item not found for update");
+                setMessage("Error: Item not found");
+                return;
+            }
+            
+            console.log("Updating item:", itemToUpdate);
+            
             let token = accessToken;
             if(!token) {
                 token = await refreshRequest();
@@ -145,7 +156,8 @@ function InventoryPanel() {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`
                 },
-                body: JSON.stringify(...sortedItems.filter(element => element._id == updateItemId))
+                body: JSON.stringify(itemToUpdate),
+                credentials: 'include'
             });
             
             if (response.status === 401) {                                       
@@ -156,17 +168,29 @@ function InventoryPanel() {
                         "Content-Type": "application/json",
                         "Authorization": `Bearer ${token}`
                     },
-                    body: JSON.stringify(...sortedItems.filter(element => element._id == updateItemId))
+                    body: JSON.stringify(itemToUpdate),
+                    credentials: 'include'
                 });                  
             }
             
-            const data = await response.json();
-            console.log(data);
-            if(response.ok) {
-                setMessage(data.message);
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`Server responded with ${response.status}: ${errorText}`);
+                setMessage(`Error: ${response.status === 403 ? "Admin access required" : errorText}`);
+                return;
             }
+            
+            const data = await response.json();
+            console.log("Update response:", data);
+            setMessage(data.message);
+            
+            // Update the items array with the updated item
+            setItems(prevItems => prevItems.map(item => 
+                item._id === updateItemId ? itemToUpdate : item
+            ));
         } catch (error) {
             console.error("Error updating item:", error);
+            setMessage("Error: " + (error.message || "Failed to update item"));
         } finally {
             setUpdateItemId(null);
             setCurrentlyEdit(false);
@@ -179,75 +203,109 @@ function InventoryPanel() {
 
     async function removeItemFn() {
         if(!removeItemId) return;
-        let token = accessToken;
-        if (!token) token = await refreshRequest();
-        let response = await fetch("/api/item/remove",{
-            method:"DELETE",
-            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            body: JSON.stringify({id:removeItemId})
-        });
-        if (response.status === 401) {
-            token = await refreshRequest();
-            response = await fetch("/api/item/remove",{
+        
+        try {
+            console.log("Removing item ID:", removeItemId);
+            
+            let token = accessToken;
+            if (!token) token = await refreshRequest();
+            
+            let response = await fetch("/api/item/remove",{
                 method:"DELETE",
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify({id:removeItemId})
+                body: JSON.stringify({id:removeItemId}),
+                credentials: 'include'
             });
+            
+            if (response.status === 401) {
+                token = await refreshRequest();
+                response = await fetch("/api/item/remove",{
+                    method:"DELETE",
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                    body: JSON.stringify({id:removeItemId}),
+                    credentials: 'include'
+                });
+            }
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`Server responded with ${response.status}: ${errorText}`);
+                setMessage(`Error: ${response.status === 403 ? "Admin access required" : errorText}`);
+                return;
+            }
+            
+            const data = await response.json();
+            console.log("Remove response:", data);
+            
+            // Update items state by filtering out the removed item
+            setItems((prev) => ([...(prev.filter((element) => element._id !== removeItemId))]));
+            setMessage(data.message);
+        } catch (error) {
+            console.error("Error removing item:", error);
+            setMessage("Error: " + (error.message || "Failed to remove item"));
+        } finally {
+            setRemoveItemId(null);
+            setCurrentlyEdit(false);
+            
+            setTimeout(() => {
+                setMessage(null);
+            }, 2000);
         }
-        
-        const data=await response.json()
-        if(response.ok){
-            setItems((prev)=>([...(prev.filter((element)=>element._id!=removeItemId))]))
-            setMessage(data.message)
-        }
-
-        setRemoveItemId(null);
-        setCurrentlyEdit(false);
-
-        setTimeout(() => {
-        setMessage(null);
-        }, 2000);
     }
 
     async function addItemFn() {
         if(!newItem) return;
 
-        try{
-        let token = accessToken;
-        if (!token) token = await refreshRequest();
-        let response = await fetch("/api/item/add",{
-            method:"POST",
-            headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-            body: JSON.stringify(newItem)
-        });
-        if (response.status === 401) {
-            token = await refreshRequest();
-            response = await fetch("/api/item/add",{
-                method:"POST",
+        try {
+            console.log("Adding new item:", newItem);
+            
+            let token = accessToken;
+            if (!token) token = await refreshRequest();
+            
+            let response = await fetch("/api/item/add",{
+                method:"PUT", // Changed to PUT to match the route definition
                 headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
-                body: JSON.stringify(newItem)
+                body: JSON.stringify(newItem),
+                credentials: 'include'
             });
-        }
-        
-        const data=await response.json()
-        if(response.ok){
-            setItems((prev)=>([...prev,{...newItem,_id:data._id}]))
-            setMessage(data.message)
-        }
-
-        else{
-            setMessage(data.message)
-        }
-        setNewItem(null);
-        setCurrentlyEdit(false);
-
-        setTimeout(() => {
-        setMessage(null);
-        }, 2000);
-
-
-        }catch(error){
-            console.log(error)
+            
+            if (response.status === 401) {
+                token = await refreshRequest();
+                response = await fetch("/api/item/add",{
+                    method:"PUT", // Changed to PUT to match the route definition
+                    headers: { "Content-Type": "application/json", "Authorization": `Bearer ${token}` },
+                    body: JSON.stringify(newItem),
+                    credentials: 'include'
+                });
+            }
+            
+            if (!response.ok) {
+                const errorText = await response.text();
+                console.error(`Server responded with ${response.status}: ${errorText}`);
+                setMessage(`Error: ${response.status === 403 ? "Admin access required" : errorText}`);
+                return;
+            }
+            
+            const data = await response.json();
+            console.log("Add response:", data);
+            
+            if (data._id) {
+                // Add the new item to the items state with the returned ID
+                setItems((prev) => ([...prev, {...newItem, _id: data._id}]));
+                setMessage(data.message || "Item added successfully");
+            } else {
+                setMessage(data.message || "Item added but no ID returned");
+            }
+        } catch (error) {
+            console.error("Error adding item:", error);
+            setMessage("Error: " + (error.message || "Failed to add item"));
+        } finally {
+            setNewItem(null);
+            setCurrentlyEdit(false);
+            
+            setTimeout(() => {
+                setMessage(null);
+            }, 2000);
         }
     }
 

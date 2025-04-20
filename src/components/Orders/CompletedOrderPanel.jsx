@@ -114,14 +114,33 @@ function CompletedOrderPanel() {
         console.log(id)
     }
 
-    const changeStatusFn= async(id,status,prevStatus)=>{
+    const changeStatusFn= async(id,status)=>{
         try{
-
-            const response = await fetch("/api/order/orders/change", {
-                method: "PUT",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id,status }),
-            });
+                    let token = accessToken;
+                    if (!token) {
+                        token = await refreshRequest();
+                    }
+        
+                    let response = await fetch("/api/order/orders/change", {
+                        method: "PUT",
+                        headers: {
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        },
+                        body: JSON.stringify({ id, status }),
+                    });
+        
+                    if (response.status === 401) {
+                        token = await refreshRequest();
+                        response = await fetch("/api/order/orders/change", {
+                            method: "PUT",
+                            headers: {
+                                "Content-Type": "application/json",
+                                "Authorization": `Bearer ${token}`
+                            },
+                            body: JSON.stringify({ id, status }),
+                        });
+                    }
     
             const data = await response.json();
             console.log(data)
@@ -130,11 +149,6 @@ function CompletedOrderPanel() {
                 setCompletedOrders((prev)=>(prev.map((element)=>(element._id!=id?(element):{...element,status}))))
             else
                 setCompletedOrders((prev)=>(prev.filter((element)=>(element._id!=id))))
-                
-
-            
-        
-
         }catch(error){
             console.log(error)
         }
