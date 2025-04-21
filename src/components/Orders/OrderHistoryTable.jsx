@@ -15,6 +15,7 @@ export default function OrderHistoryTable({ orders = [], onShow, title = "Orders
           <thead>
             <tr>
               <th>Items</th>
+              <th>Ordered At</th>
               <th>Status</th>
               <th>Total</th>
               <th>Show</th>
@@ -29,6 +30,7 @@ export default function OrderHistoryTable({ orders = [], onShow, title = "Orders
                       {order.orderedItems.map((item) => item.itemName).join(", ")}
                     </div>
                   </td>
+                  <td>{new Date(order.orderedAt).toLocaleString()}</td>
                   <td>
                     <span className={`status-badge ${order.status.toLowerCase()}`}>
                       {order.status}
@@ -48,7 +50,7 @@ export default function OrderHistoryTable({ orders = [], onShow, title = "Orders
               ))
             ) : (
               <tr>
-                <td colSpan="4" className="empty-state">
+                <td colSpan="5" className="empty-state">
                   No orders found
                 </td>
               </tr>

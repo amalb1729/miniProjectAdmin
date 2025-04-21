@@ -231,6 +231,7 @@ function CompletedOrderPanel() {
                         <thead>
                             <tr>
                                 <th>User</th>
+                                <th>Ordered At</th>
                                 <th>Department</th>
                                 <th>Semester</th>
                                 <th>Status</th>
@@ -240,7 +241,7 @@ function CompletedOrderPanel() {
                         <tbody>
                             {completedOrders.length === 0 ? (
                                 <tr>
-                                    <td colSpan="5" className="empty-state">
+                                    <td colSpan="8" className="empty-state">
                                         <div className="empty-state-content">
                                             <span className="empty-icon">📭</span>
                                             <p>No orders found</p>
@@ -256,6 +257,7 @@ function CompletedOrderPanel() {
                                                 {order.userId.username}
                                             </div>
                                         </td>
+                                        <td>{new Date(order.orderedAt).toLocaleString()}</td>
                                         <td className="department">{order.userId.department}</td>
                                         <td className="semester">Semester {order.userId.semester}</td>
                                         <td>
