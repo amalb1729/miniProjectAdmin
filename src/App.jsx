@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import './App.css'
 import Header from "./components/header/Header"
 import Footer from './components/footer/Footer'
@@ -42,6 +42,27 @@ function App() {
     setAccessToken(tokenString);
     return tokenString;
   };
+
+  useEffect(() => {
+    const handleBeforeUnload = (e) => {
+      if (isLoggedIn) {
+        // Fire and forget: browser may cancel this, but it will attempt
+        fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        });
+      }
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [isLoggedIn]);
 
   const loginProp={ isLoginOpen, setLoginOpen,isLoggedIn,setLoggedIn}
 
