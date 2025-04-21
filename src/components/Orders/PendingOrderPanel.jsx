@@ -21,6 +21,8 @@ function PendingOrderPanel() {
     const [qrKey, setQrKey] = useState(Date.now())
     const [cancellingAll, setCancellingAll] = useState(false)
     const [cancelResult, setCancelResult] = useState(null)
+    const [checkoutEnabled, setCheckoutEnabled] = useState(true)
+    const [toggleLoading, setToggleLoading] = useState(false)
 
     const handleScanSuccess = (id) => {
         showFullOrder(id, "Pending");
@@ -84,7 +86,35 @@ function PendingOrderPanel() {
             }
         };
 
+        const fetchCheckoutStatus = async () => {
+            try {
+                let token = accessToken;
+                if (!token) {
+                    token = await refreshRequest();
+                }
+
+                let response = await fetch("/api/order/checkout-status", {
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+
+                if (response.status === 401) {
+                    token = await refreshRequest();
+                    response = await fetch("/api/order/checkout-status", {
+                        headers: { "Authorization": `Bearer ${token}` }
+                    });
+                }
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setCheckoutEnabled(data.checkoutEnabled);
+                }
+            } catch (error) {
+                console.error("Error fetching checkout status:", error);
+            }
+        };
+
         fetchPendingOrders();
+        fetchCheckoutStatus(); // Fetch checkout status when component mounts
     }, []);
 
     useEffect(() => {
@@ -158,6 +188,38 @@ function PendingOrderPanel() {
             console.log(error);
         }
         setNewStatus({});
+    };
+
+    const toggleCheckoutStatus = async () => {
+        setToggleLoading(true);
+        try {
+            let token = accessToken;
+            if (!token) {
+                token = await refreshRequest();
+            }
+
+            let response = await fetch("/api/order/toggle-checkout", {
+                method: "POST",
+                headers: { "Authorization": `Bearer ${token}` }
+            });
+
+            if (response.status === 401) {
+                token = await refreshRequest();
+                response = await fetch("/api/order/toggle-checkout", {
+                    method: "POST",
+                    headers: { "Authorization": `Bearer ${token}` }
+                });
+            }
+
+            if (response.ok) {
+                const data = await response.json();
+                setCheckoutEnabled(data.checkoutEnabled);
+            }
+        } catch (error) {
+            console.error("Error toggling checkout status:", error);
+        } finally {
+            setToggleLoading(false);
+        }
     };
 
     // Function to cancel all pending orders
@@ -266,15 +328,25 @@ function PendingOrderPanel() {
                 <div className="section-header">
                     <h3 className="section-title">Pending Orders</h3>
                     <div className="order-count">{pendingOrders.length} orders</div>
-                    {pendingOrders.length > 0 && (
+                    <div className="admin-controls">
                         <button 
-                            className="cancel-all-btn" 
-                            onClick={cancelAllPendingOrders}
-                            disabled={cancellingAll}
+                            className={`checkout-toggle-btn ${checkoutEnabled ? 'enabled' : 'disabled'}`}
+                            onClick={toggleCheckoutStatus}
+                            disabled={toggleLoading}
                         >
-                            {cancellingAll ? "Cancelling..." : "Cancel All Pending Orders"}
+                            {toggleLoading ? 'Updating...' : checkoutEnabled ? 'Disable Checkout' : 'Enable Checkout'}
                         </button>
-                    )}
+                        
+                        {pendingOrders.length > 0 && (
+                            <button 
+                                className="cancel-all-btn" 
+                                onClick={cancelAllPendingOrders}
+                                disabled={cancellingAll}
+                            >
+                                {cancellingAll ? "Cancelling..." : "Cancel All Pending Orders"}
+                            </button>
+                        )}
+                    </div>
                 </div>
                 
                 {cancelResult && (
