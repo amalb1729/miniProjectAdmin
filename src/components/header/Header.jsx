@@ -43,11 +43,11 @@ function Header() {
                 <hr />
                 <nav>
                     <ul className="nav-list">
-                        <li><NavLink to="/completed" className={({ isActive }) => isActive ? "act" : "inact"}>completed</NavLink></li>
-                        <li><NavLink to="/pending" className={({ isActive }) => isActive ? "act" : "inact"}>pending</NavLink></li>
-                        <li><NavLink to="/inventory" className={({ isActive }) => isActive ? "act" : "inact"}>inventory</NavLink></li>
-                        <li><NavLink to="/students" className={({ isActive }) => isActive ? "act" : "inact"}>student</NavLink></li>
-                        <li><NavLink to="/announcements" className={({ isActive }) => isActive ? "act" : "inact"}>announcements</NavLink></li>
+                        <li><NavLink to="/completed" className={({ isActive }) => isActive ? "act" : "inact"}>Completed</NavLink></li>
+                        <li><NavLink to="/pending" className={({ isActive }) => isActive ? "act" : "inact"}>Pending</NavLink></li>
+                        <li><NavLink to="/inventory" className={({ isActive }) => isActive ? "act" : "inact"}>Inventory</NavLink></li>
+                        <li><NavLink to="/students" className={({ isActive }) => isActive ? "act" : "inact"}>Student</NavLink></li>
+                        <li><NavLink to="/announcements" className={({ isActive }) => isActive ? "act" : "inact"}>Announcements</NavLink></li>
                     </ul>
                 </nav>
             </div>
