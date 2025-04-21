@@ -33,6 +33,13 @@ function App() {
     });
 
     if (!res.ok) {
+        setLoginOpen(true); // Show login modal
+        setLoggedIn(false); // Force logout
+        // Optionally clear accessToken and session storage
+        setAccessToken("");
+        sessionStorage.removeItem('isAdminLoggedIn');
+        // Show a session expired message
+        alert("Session expired, login again");
         throw new Error("Session expired");
     }
 
