@@ -19,6 +19,8 @@ function PendingOrderPanel() {
     const [filterSearch, setFilterSearch] = useState({ department: "", semester: "" })
     const [result, setResult] = useState("")
     const [qrKey, setQrKey] = useState(Date.now())
+    const [cancellingAll, setCancellingAll] = useState(false)
+    const [cancelResult, setCancelResult] = useState(null)
 
     const handleScanSuccess = (id) => {
         showFullOrder(id, "Pending");
@@ -158,6 +160,55 @@ function PendingOrderPanel() {
         setNewStatus({});
     };
 
+    // Function to cancel all pending orders
+    const cancelAllPendingOrders = async () => {
+        if (!window.confirm("Are you sure you want to cancel ALL pending orders? This will return all items to stock and cannot be undone.")) {
+            return;
+        }
+        
+        setCancellingAll(true);
+        try {
+            let token = accessToken;
+            if (!token) {
+                token = await refreshRequest();
+            }
+
+            let response = await fetch("/api/order/cancel-all-pending", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${token}`
+                }
+            });
+
+            if (response.status === 401) {
+                token = await refreshRequest();
+                response = await fetch("/api/order/cancel-all-pending", {
+                    method: "POST",
+                    headers: {
+                        "Authorization": `Bearer ${token}`
+                    }
+                });
+            }
+
+            const data = await response.json();
+            setCancelResult(data);
+            
+            // Refresh the orders list after cancellation
+            if (response.ok) {
+                setOrder([]);
+                setPendingOrders([]);
+                setTimeout(() => {
+                    setCancelResult(null);
+                }, 5000);
+            }
+        } catch (error) {
+            console.error("Error cancelling all orders:", error);
+            setCancelResult({ error: "Failed to cancel orders. Please try again." });
+        } finally {
+            setCancellingAll(false);
+        }
+    };
+
     const orderModalProps = { modalIsOpen, setModelIsOpen, showing, hideFullOrder, statusModal, setStatusModal, newStatus, setNewStatus, changeStatusFn }
     // const statusModalProps={statusModal,setStatusModal,newStatus,setNewStatus,changeStatusFn}
 
@@ -215,7 +266,23 @@ function PendingOrderPanel() {
                 <div className="section-header">
                     <h3 className="section-title">Pending Orders</h3>
                     <div className="order-count">{pendingOrders.length} orders</div>
+                    {pendingOrders.length > 0 && (
+                        <button 
+                            className="cancel-all-btn" 
+                            onClick={cancelAllPendingOrders}
+                            disabled={cancellingAll}
+                        >
+                            {cancellingAll ? "Cancelling..." : "Cancel All Pending Orders"}
+                        </button>
+                    )}
                 </div>
+                
+                {cancelResult && (
+                    <div className={`cancel-result ${cancelResult.error ? 'error' : 'success'}`}>
+                        {cancelResult.error || cancelResult.message}
+                    </div>
+                )}
+                
                 <div className="table-container">
                     <table className="order-table">
                         <thead>
