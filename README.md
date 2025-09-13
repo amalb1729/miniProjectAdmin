@@ -13,8 +13,8 @@ This is the administrative dashboard for the Student Store application. It provi
 
 *   **Framework**: React
 *   **Routing**: React Router
-*   **API Communication**: Axios
-*   **Styling**: (e.g., Material-UI, CSS Modules - can be specified)
+*   **API Communication**: Fetch API
+*   **Styling**:  CSS
 
 ## Prerequisites
 
